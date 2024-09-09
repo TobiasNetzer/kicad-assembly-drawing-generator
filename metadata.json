@@ -1,0 +1,31 @@
+{
+    "$schema": "https://go.kicad.org/pcm/schemas/v1",
+    "name": "Assembly Drawing Generator",
+    "description": "Generate assembly drawings",
+    "description_full": "A tool that makes exporting good looking assembly drawings simple. Select the layers you want as part of the drawing and the plugin will take care of exporting, merging as well as scaling and generate a pdf document.",
+    "identifier": "com.gitlab.TobiasNetzer.Kicad-assembly-generator",
+    "type": "plugin",
+    "author": {
+        "name": "Tobias Netzer",
+        "contact": {
+            "gitlab": "https://gitlab.com/TobiasNetzer"
+        }
+    },    
+    "maintainer": {
+        "name": "Tobias Netzer",
+        "contact": {
+            "gitlab": "https://gitlab.com/TobiasNetzer"
+        }
+    },
+    "license": "MIT",
+    "resources": {
+        "homepage": "https://gitlab.com/TobiasNetzer/kicad-assembly-generator"
+    },
+    "versions": [
+        {
+            "version": "1.0.0",
+            "status": "stable",
+            "kicad_version": "8.0.0"
+        }
+    ]
+}

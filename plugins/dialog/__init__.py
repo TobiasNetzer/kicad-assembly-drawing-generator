@@ -1,0 +1,1 @@
+from .assembly_generator_dialog import Dialog
