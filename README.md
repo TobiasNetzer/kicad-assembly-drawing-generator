@@ -37,6 +37,10 @@ Kicad assembly generator is currently not part of the official Kicad addons repo
 ![installation](https://gitlab.com/TobiasNetzer/kicad-assembly-generator/-/raw/main/doc/installation.png?ref_type=heads)
 ![installed](https://gitlab.com/TobiasNetzer/kicad-assembly-generator/-/raw/main/doc/installed.png?ref_type=heads)
 
+# Disclaimer
+
+This plugin was created for my specific needs and probably won't cover all edge cases.
+
 ## Licence and credits
 
 Plugin code licensed under MIT, see `LICENSE` for more info.
