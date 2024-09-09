@@ -14,9 +14,9 @@ Configure `Top` and `Bottom` views of your board:
 - Layer properties can be configured to your liking for each layer separately
 
 Configure `Output`:
-- A `Assembly Drawing` folder containing the expported files will be created in the output directory
 - Select a scale factor or use the auto scaling option
-- Select files to export
+- Select board views to export
+- A `Assembly Drawing` folder containing the expported files will be created in the output directory
 
 Make sure to save your configuration once you're happy with it!
 
