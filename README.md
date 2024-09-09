@@ -13,9 +13,9 @@ Configure `Top` and `Bottom` views of your board:
 - Simply select and sort the layers you want shown in your assembly drawing
 - Layer properties can be configured to your liking for each layer separately
 
-Configure `output`:
+Configure `Output`:
 - A `Assembly Drawing` folder containing the expported files will be created in the output directory
-- Manually select a scale factor or use the auto scaling option
+- Select a scale factor or use the auto scaling option
 - Select files to export
 
 Make sure to save your configuration once you're happy with it!
