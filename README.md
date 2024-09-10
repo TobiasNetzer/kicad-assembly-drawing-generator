@@ -1,7 +1,7 @@
 # Kicad Assembly Drawing Generator Plugin
 ![icon](https://gitlab.com/TobiasNetzer/kicad-assembly-generator/-/raw/main/resources/icon.png?ref_type=heads)
 
-A tool that makes exporting good looking assembly drawings simple. Select the layers you want as part of the drawing and the plugin will take care of exporting, merging as well as scaling and generate a pdf document.
+A tool that makes exporting good looking assembly drawings simple. Select the layers you want as part of the assembly drawing and the plugin will take care of exporting, merging as well as scaling and generates a pdf document.
 
 Example:
 - [Assembly Drawing Top View](https://gitlab.com/TobiasNetzer/kicad-assembly-generator/-/raw/main/doc/nanoLogger%20-%20Assembly%20Drawing%20Top.pdf?ref_type=heads)
@@ -11,12 +11,12 @@ Example:
 
 Configure `Top` and `Bottom` views of your board:
 - Simply select and sort the layers you want shown in your assembly drawing
-- Layer properties can be configured to your liking for each layer separately
+- Adjust the layer properties for each layer to achieve the look you want
 
 Configure `Output`:
 - Select a scale factor or use the auto scaling option
 - Select board views to export
-- A `Assembly Drawing` folder containing the expported files will be created in the output directory
+- An `Assembly Drawing` folder containing the exported files will be created in the output directory, which by default points to the project folder
 
 Make sure to save your configuration once you're happy with it!
 
@@ -24,7 +24,7 @@ Make sure to save your configuration once you're happy with it!
 
 ## Installation
 
-**Note:** [CairoSVG](https://github.com/Kozea/CairoSVG) needs to be installed in order for the plugin to convert svg files into pdfs.
+**Note:** [CairoSVG](https://github.com/Kozea/CairoSVG) needs to be installed in order for the plugin to convert svg files into pdf's.
 - To install it simply open `KiCad Command Prompt` and run `python -m pip install cairosvg`
 
 
@@ -41,7 +41,7 @@ Kicad assembly generator is currently not part of the official Kicad addons repo
 
 This plugin was created for my specific needs and probably won't cover all edge cases.
 
-## Licence and credits
+## Licence and credit
 
 Plugin code licensed under MIT, see `LICENSE` for more info.
 - Python PDF library: [PyPDF](https://github.com/py-pdf/pypdf)
