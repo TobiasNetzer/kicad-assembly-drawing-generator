@@ -4,7 +4,10 @@ stages:
 # Job to create a zip file and attach it to a release
 zip_files:
   stage: package
-  image: ubuntu
+  image: ruby:3.1
+  before_script:
+    # Install zip utility
+    - apt-get update && apt-get install -y zip
   script:
     # Create a folder for the zip output
     - mkdir -p kicad_assembly_generator_${CI_COMMIT_TAG}
