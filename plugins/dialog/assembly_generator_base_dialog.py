@@ -36,7 +36,7 @@ class MainDialog ( wx.Dialog ):
 
         checkListTopChoices = []
         self.checkListTop = wx.CheckListBox( LayersTOP.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, checkListTopChoices, wx.LB_NEEDED_SB )
-        self.checkListTop.SetMinSize( wx.Size( 300,150 ) )
+        self.checkListTop.SetMinSize( wx.Size( 150,200 ) )
 
         bSizer2.Add( self.checkListTop, 1, wx.ALL|wx.EXPAND, 5 )
 
@@ -72,7 +72,7 @@ class MainDialog ( wx.Dialog ):
 
         checkListBottomChoices = []
         self.checkListBottom = wx.CheckListBox( LayersBOT.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, checkListBottomChoices, wx.LB_NEEDED_SB )
-        self.checkListBottom.SetMinSize( wx.Size( 300,150 ) )
+        self.checkListBottom.SetMinSize( wx.Size( 150,200 ) )
 
         bSizer8.Add( self.checkListBottom, 1, wx.ALL|wx.EXPAND, 5 )
 
@@ -121,22 +121,6 @@ class MainDialog ( wx.Dialog ):
         self.drillMarksChoice.SetSelection( 2 )
         bSizer21.Add( self.drillMarksChoice, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
-
-        bSizer18.Add( bSizer21, 1, wx.EXPAND, 5 )
-
-        bSizer22 = wx.BoxSizer( wx.HORIZONTAL )
-
-
-        bSizer18.Add( bSizer22, 1, wx.EXPAND, 5 )
-
-        self.mirrorLayerCheckBox = wx.CheckBox( LayerSettings.GetStaticBox(), wx.ID_ANY, _(u"Mirrored"), wx.DefaultPosition, wx.DefaultSize, 0 )
-        bSizer18.Add( self.mirrorLayerCheckBox, 1, 0, 5 )
-
-
-        bSizer17.Add( bSizer18, 0, wx.ALL|wx.EXPAND, 5 )
-
-        bSizer11 = wx.BoxSizer( wx.VERTICAL )
-
         bSizer19 = wx.BoxSizer( wx.HORIZONTAL )
 
         self.layerOpacityText = wx.StaticText( LayerSettings.GetStaticBox(), wx.ID_ANY, _(u"Opacity:"), wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -148,7 +132,29 @@ class MainDialog ( wx.Dialog ):
         bSizer19.Add( self.LayerOpacitySlider, 0, 0, 5 )
 
 
-        bSizer11.Add( bSizer19, 1, 0, 5 )
+        bSizer21.Add( bSizer19, 1, 0, 5 )
+
+
+        bSizer18.Add( bSizer21, 1, 0, 5 )
+
+        bSizer22 = wx.BoxSizer( wx.HORIZONTAL )
+
+        self.mirrorLayerCheckBox = wx.CheckBox( LayerSettings.GetStaticBox(), wx.ID_ANY, _(u"Mirror layer"), wx.DefaultPosition, wx.DefaultSize, 0 )
+        bSizer22.Add( self.mirrorLayerCheckBox, 1, wx.ALL, 5 )
+
+        self.plotRefDesignatorsCheckBox = wx.CheckBox( LayerSettings.GetStaticBox(), wx.ID_ANY, _(u"Plot reference designators"), wx.DefaultPosition, wx.DefaultSize, 0 )
+        bSizer22.Add( self.plotRefDesignatorsCheckBox, 0, wx.ALL, 5 )
+
+        self.plotFootprintValuesCheckBox = wx.CheckBox( LayerSettings.GetStaticBox(), wx.ID_ANY, _(u"Plot footprint values"), wx.DefaultPosition, wx.DefaultSize, 0 )
+        bSizer22.Add( self.plotFootprintValuesCheckBox, 0, wx.ALL, 5 )
+
+
+        bSizer18.Add( bSizer22, 0, 0, 5 )
+
+
+        bSizer17.Add( bSizer18, 0, wx.ALL, 5 )
+
+        bSizer11 = wx.BoxSizer( wx.VERTICAL )
 
 
         bSizer17.Add( bSizer11, 0, wx.LEFT, 30 )
@@ -263,8 +269,10 @@ class MainDialog ( wx.Dialog ):
         self.upBottomViewBtn.Bind( wx.EVT_BUTTON, self.onClickUpBottomViewBtn )
         self.downBottomViewBtn.Bind( wx.EVT_BUTTON, self.onClickDownBottomViewBtn )
         self.drillMarksChoice.Bind( wx.EVT_CHOICE, self.onDrillMarkChanged )
-        self.mirrorLayerCheckBox.Bind( wx.EVT_CHECKBOX, self.onMirrorLayerCheckBox )
         self.LayerOpacitySlider.Bind( wx.EVT_SLIDER, self.onOpacitySliderChange )
+        self.mirrorLayerCheckBox.Bind( wx.EVT_CHECKBOX, self.onMirrorLayerCheckBox )
+        self.plotRefDesignatorsCheckBox.Bind( wx.EVT_CHECKBOX, self.onPlotRefDesignatorsCheckBox )
+        self.plotFootprintValuesCheckBox.Bind( wx.EVT_CHECKBOX, self.onPlotFootprintValuesCheckBox )
         self.autoScaleCheckBox.Bind( wx.EVT_CHECKBOX, self.onAutoScale )
         self.saveConfigBtn.Bind( wx.EVT_BUTTON, self.onClickSaveConfig )
         self.exitBtn.Bind( wx.EVT_BUTTON, self.onClickExit )
@@ -302,10 +310,16 @@ class MainDialog ( wx.Dialog ):
     def onDrillMarkChanged( self, event ):
         event.Skip()
 
+    def onOpacitySliderChange( self, event ):
+        event.Skip()
+
     def onMirrorLayerCheckBox( self, event ):
         event.Skip()
 
-    def onOpacitySliderChange( self, event ):
+    def onPlotRefDesignatorsCheckBox( self, event ):
+        event.Skip()
+
+    def onPlotFootprintValuesCheckBox( self, event ):
         event.Skip()
 
     def onAutoScale( self, event ):

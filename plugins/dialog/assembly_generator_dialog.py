@@ -63,7 +63,9 @@ class Dialog(assembly_generator_base_dialog.MainDialog):
                     "ID": i,
                     "Opacity": 100,
                     "Mirrored": False,
-                    "DrillMarks": 2
+                    "DrillMarks": 2,
+                    "PlotReferenceDesignators": True,
+                    "PlotFootprintValues": True
                     }
                 })
                 self.settingsLayersBot.update({
@@ -71,7 +73,9 @@ class Dialog(assembly_generator_base_dialog.MainDialog):
                     "ID": i,
                     "Opacity": 100,
                     "Mirrored": True,
-                    "DrillMarks": 2
+                    "DrillMarks": 2,
+                    "PlotReferenceDesignators": True,
+                    "PlotFootprintValues": True
                     }
                 })
 
@@ -97,12 +101,16 @@ class Dialog(assembly_generator_base_dialog.MainDialog):
         self.mirrorLayerCheckBox.SetValue(self.settingsLayersTop[self.checkListTop.GetString(self.checkListTop.GetSelection())]["Mirrored"])
         self.LayerOpacitySlider.SetValue(self.settingsLayersTop[self.checkListTop.GetString(self.checkListTop.GetSelection())]["Opacity"])
         self.drillMarksChoice.SetSelection(self.settingsLayersTop[self.checkListTop.GetString(self.checkListTop.GetSelection())]["DrillMarks"])
+        self.plotRefDesignatorsCheckBox.SetValue(self.settingsLayersTop[self.checkListTop.GetString(self.checkListTop.GetSelection())]["PlotReferenceDesignators"])
+        self.plotFootprintValuesCheckBox.SetValue(self.settingsLayersTop[self.checkListTop.GetString(self.checkListTop.GetSelection())]["PlotFootprintValues"])
     
     def onSelectBottom(self, event):
         self.checkListTop.Deselect(self.checkListTop.GetSelection())
         self.mirrorLayerCheckBox.SetValue(self.settingsLayersBot[self.checkListBottom.GetString(self.checkListBottom.GetSelection())]["Mirrored"])
         self.LayerOpacitySlider.SetValue(self.settingsLayersBot[self.checkListBottom.GetString(self.checkListBottom.GetSelection())]["Opacity"])
         self.drillMarksChoice.SetSelection(self.settingsLayersBot[self.checkListBottom.GetString(self.checkListBottom.GetSelection())]["DrillMarks"])
+        self.plotRefDesignatorsCheckBox.SetValue(self.settingsLayersBot[self.checkListBottom.GetString(self.checkListBottom.GetSelection())]["PlotReferenceDesignators"])
+        self.plotFootprintValuesCheckBox.SetValue(self.settingsLayersBot[self.checkListBottom.GetString(self.checkListBottom.GetSelection())]["PlotFootprintValues"])
 
 
     def onSelectionChangedTop(self, event):
@@ -176,6 +184,18 @@ class Dialog(assembly_generator_base_dialog.MainDialog):
         elif self.checkListBottom.GetSelection() != -1:
             self.settingsLayersBot[self.checkListBottom.GetString(self.checkListBottom.GetSelection())]["Mirrored"] = self.mirrorLayerCheckBox.IsChecked()
 
+    def onPlotRefDesignatorsCheckBox(self, event):
+        if self.checkListTop.GetSelection() != -1: 
+            self.settingsLayersTop[self.checkListTop.GetString(self.checkListTop.GetSelection())]["PlotReferenceDesignators"] = self.plotRefDesignatorsCheckBox.IsChecked()
+        elif self.checkListBottom.GetSelection() != -1:
+            self.settingsLayersBot[self.checkListBottom.GetString(self.checkListBottom.GetSelection())]["PlotReferenceDesignators"] = self.plotRefDesignatorsCheckBox.IsChecked()
+    
+    def onPlotFootprintValuesCheckBox(self, event):
+        if self.checkListTop.GetSelection() != -1: 
+            self.settingsLayersTop[self.checkListTop.GetString(self.checkListTop.GetSelection())]["PlotFootprintValues"] = self.plotFootprintValuesCheckBox.IsChecked()
+        elif self.checkListBottom.GetSelection() != -1:
+            self.settingsLayersBot[self.checkListBottom.GetString(self.checkListBottom.GetSelection())]["PlotFootprintValues"] = self.plotFootprintValuesCheckBox.IsChecked()
+
 
     def onOpacitySliderChange(self, event):
         if self.checkListTop.GetSelection() != -1:
@@ -226,4 +246,7 @@ class Dialog(assembly_generator_base_dialog.MainDialog):
         self.EndModal(wx.ID_CANCEL)
 
     def onClickGenerate(self, event):
+        self.progressBar.SetValue(0)
+        self.progressBar.Pulse()
         self.generateFunc(self)
+        self.progressBar.SetValue(100)

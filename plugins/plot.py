@@ -29,8 +29,6 @@ def exportLayersFromKiCad(dialog, board, directory):
     plotOptions.SetScale(1)
     plotOptions.SetUseAuxOrigin(False)
     plotOptions.SetNegative(False)
-    plotOptions.SetPlotReference(True)
-    plotOptions.SetPlotValue(True)
     plotOptions.SetPlotInvisibleText(False)
     plotOptions.SetSubtractMaskFromSilk(False)
     plotController.SetColorMode(False)
@@ -56,6 +54,9 @@ def exportLayersFromKiCad(dialog, board, directory):
         elif dialog.settingsLayersTop[layer]["DrillMarks"] == 2:
             plotOptions.SetDrillMarksType(pcbnew.DRILL_MARKS_FULL_DRILL_SHAPE)
 
+        plotOptions.SetPlotReference(dialog.settingsLayersTop[layer]["PlotReferenceDesignators"])
+        plotOptions.SetPlotValue(dialog.settingsLayersTop[layer]["PlotFootprintValues"])
+
         plotController.SetLayer(dialog.settingsLayersTop[layer]["ID"])
         plotController.OpenPlotfile(layer, pcbnew.PLOT_FORMAT_SVG,"")
         plotController.PlotLayer()
@@ -70,6 +71,9 @@ def exportLayersFromKiCad(dialog, board, directory):
             plotOptions.SetDrillMarksType(pcbnew.DRILL_MARKS_SMALL_DRILL_SHAPE)
         elif dialog.settingsLayersBot[layer]["DrillMarks"] == 2:
             plotOptions.SetDrillMarksType(pcbnew.DRILL_MARKS_FULL_DRILL_SHAPE)
+
+        plotOptions.SetPlotReference(dialog.settingsLayersBot[layer]["PlotReferenceDesignators"])
+        plotOptions.SetPlotValue(dialog.settingsLayersBot[layer]["PlotFootprintValues"])
         
         plotController.SetLayer(dialog.settingsLayersBot[layer]["ID"])
         plotController.OpenPlotfile(layer, pcbnew.PLOT_FORMAT_SVG,"")
@@ -228,9 +232,6 @@ def generateFinalSVG(svgFiles, outputFileName):
     tree.write(outputFileName)
 
 def generateAssembly(dialog):
-
-    dialog.progressBar.Pulse()
-
     try:
         import cairosvg
     except ImportError as e:
@@ -271,8 +272,6 @@ def generateAssembly(dialog):
         finally:
             f.close()
 
-        dialog.progressBar.SetValue(25)
-
     if dialog.generateBotCheckBox.IsChecked():
 
         # Export Layers from KiCad
@@ -293,8 +292,6 @@ def generateAssembly(dialog):
             dlg.Destroy()
         finally:
             f.close()
-        
-        dialog.progressBar.SetValue(50)
 
     if dialog.generateCombinedCheckBox.IsChecked():
 
@@ -318,8 +315,6 @@ def generateAssembly(dialog):
             dlg.Destroy()
         finally:
             f.close()
-        
-        dialog.progressBar.SetValue(75)
 
     if dialog.mergeFilesCheckBox.IsChecked():
         
@@ -344,5 +339,3 @@ def generateAssembly(dialog):
 
     # Remove temp directory
     shutil.rmtree(tempDirectory, ignore_errors = True)
-
-    dialog.progressBar.SetValue(100)
