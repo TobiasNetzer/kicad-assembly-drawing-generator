@@ -115,13 +115,17 @@ def mergeLayers(dialog, board, layersToMerge, settings, combinedView, filename, 
     rootCombined = ET.Element("{http://www.w3.org/2000/svg}svg")
 
     # only get bb for selected layers, otherwise all shown layers will be included and may cause issues with scaling
+    originalVisibleLayerSet = board.GetVisibleLayers()
+    originalVisibleElements = board.GetVisibleElements()
     visibleLayerSet = pcbnew.LSET()
+    visibleElements = pcbnew.GAL_SET()
     for layer in dialog.checkedLayersTop + dialog.checkedLayersBot:
         visibleLayerSet.AddLayer(dialog.settingsLayersBot[layer]["ID"])
     board.SetVisibleLayers(visibleLayerSet)
-    visibleElements = pcbnew.GAL_SET()
     board.SetVisibleElements(visibleElements)
     boundingBox = board.GetBoundingBox()
+    board.SetVisibleLayers(originalVisibleLayerSet)
+    board.SetVisibleElements(originalVisibleElements)
 
     marginTitleBlock = 35.0000 # 3,5cm margin
     marginFrame = 10.0000 # 1cm margin
