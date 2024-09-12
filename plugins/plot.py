@@ -120,7 +120,7 @@ def mergeLayers(dialog, board, layersToMerge, settings, combinedView, filename, 
     visibleLayerSet = pcbnew.LSET()
     visibleElements = pcbnew.GAL_SET()
     for layer in dialog.checkedLayersTop + dialog.checkedLayersBot:
-        visibleLayerSet.AddLayer(dialog.settingsLayersBot[layer]["ID"])
+        visibleLayerSet.AddLayer(board.GetLayerID(layer))
     board.SetVisibleLayers(visibleLayerSet)
     board.SetVisibleElements(visibleElements)
     boundingBox = board.GetBoundingBox()
@@ -193,7 +193,7 @@ def mergeLayers(dialog, board, layersToMerge, settings, combinedView, filename, 
                 if combinedView:
                     groupElement.attrib["transform"] += f"translate({moveX + width_max / 2 / scalingFactor - marginFrame / scalingFactor},{moveY})"
                 else:
-                    groupElement.attrib["transform"] += f"translate({moveX + width_max / scalingFactor},{moveY})"
+                    groupElement.attrib["transform"] += f"translate({moveX},{moveY})"
 
         layerOpacity = int(settings[layer]["Opacity"]) / 100
         groupElement.attrib["style"] = f"opacity:{layerOpacity}"
