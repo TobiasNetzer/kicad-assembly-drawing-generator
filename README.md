@@ -3,9 +3,10 @@
 
 A tool that makes exporting good looking assembly drawings simple. Select the layers you want as part of the assembly drawing and the plugin will take care of exporting, merging as well as scaling and generates a pdf document.
 
-Example:
-- [Assembly Drawing Top View](https://gitlab.com/TobiasNetzer/kicad-assembly-generator/-/raw/main/doc/nanoLogger%20-%20Assembly%20Drawing%20Top.pdf?ref_type=heads)
-- [Assembly Drawing Top + Bot View](https://gitlab.com/TobiasNetzer/kicad-assembly-generator/-/raw/main/doc/PrecisionCurrentSource%20-%20Assembly%20Drawing%20Top%20+%20Bot.pdf)
+Examples:
+- NanoLogger: [Top View](https://gitlab.com/TobiasNetzer/kicad-assembly-generator/-/raw/main/doc/nanoLogger%20-%20Assembly%20Drawing%20Top.pdf?ref_type=heads)
+- PrecisionCurrentSource: [Combined View](https://gitlab.com/TobiasNetzer/kicad-assembly-generator/-/raw/main/doc/PrecisionCurrentSource%20-%20Assembly%20Drawing%20Top%20+%20Bot.pdf)
+- [ButterStick by GregDavill](https://github.com/butterstick-fpga/butterstick-hardware): [Top + Bot View](https://gitlab.com/TobiasNetzer/kicad-assembly-generator/-/raw/main/doc/ButterStick%20-%20Assembly%20Drawing.pdf)
 
 ## Usage
 
