@@ -193,7 +193,7 @@ class MainDialog ( wx.Dialog ):
 
         bSizer13.Add( self.layerScaleText, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 
-        self.layerScaleTextBox = wx.TextCtrl( Output.GetStaticBox(), wx.ID_ANY, _(u"1"), wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.layerScaleTextBox = wx.TextCtrl( Output.GetStaticBox(), wx.ID_ANY, _(u"1"), wx.DefaultPosition, self.FromDIP(wx.Size( 50,-1 )), 0 )
         self.layerScaleTextBox.SetMaxLength( 3 )
         self.layerScaleTextBox.Enable( False )
 
@@ -205,6 +205,12 @@ class MainDialog ( wx.Dialog ):
 
 
         bSizer111.Add( bSizer13, 1, 0, 5 )
+
+        self.boundingBoxCheckBox = wx.CheckBox( Output.GetStaticBox(), wx.ID_ANY, _(u"Only use board edges for determining board size"), wx.DefaultPosition, wx.DefaultSize, 0 )
+        bSizer111.Add( self.boundingBoxCheckBox, 0, wx.ALL, 5 )
+
+        self.m_staticline1 = wx.StaticLine( Output.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.LI_HORIZONTAL )
+        bSizer111.Add( self.m_staticline1, 0, wx.ALL|wx.EXPAND, 5 )
 
         self.generateTopCheckBox = wx.CheckBox( Output.GetStaticBox(), wx.ID_ANY, _(u"Generate top view"), wx.DefaultPosition, wx.DefaultSize, 0 )
         bSizer111.Add( self.generateTopCheckBox, 0, wx.ALL, 5 )
@@ -274,6 +280,7 @@ class MainDialog ( wx.Dialog ):
         self.plotRefDesignatorsCheckBox.Bind( wx.EVT_CHECKBOX, self.onPlotRefDesignatorsCheckBox )
         self.plotFootprintValuesCheckBox.Bind( wx.EVT_CHECKBOX, self.onPlotFootprintValuesCheckBox )
         self.autoScaleCheckBox.Bind( wx.EVT_CHECKBOX, self.onAutoScale )
+        self.boundingBoxCheckBox.Bind( wx.EVT_CHECKBOX, self.onBoundingBoxCheckBox )
         self.saveConfigBtn.Bind( wx.EVT_BUTTON, self.onClickSaveConfig )
         self.exitBtn.Bind( wx.EVT_BUTTON, self.onClickExit )
         self.generateBtn.Bind( wx.EVT_BUTTON, self.onClickGenerate )
@@ -323,6 +330,9 @@ class MainDialog ( wx.Dialog ):
         event.Skip()
 
     def onAutoScale( self, event ):
+        event.Skip()
+
+    def onBoundingBoxCheckBox( self, event ):
         event.Skip()
 
     def onClickSaveConfig( self, event ):

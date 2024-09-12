@@ -41,6 +41,7 @@ class Dialog(assembly_generator_base_dialog.MainDialog):
             self.mergeFilesCheckBox.SetValue(ast.literal_eval(config.get("OutputSettings", "mergefiles")))
             self.autoScaleCheckBox.SetValue(ast.literal_eval(config.get("OutputSettings", "autoscaling")))
             self.layerScaleTextBox.SetValue(config.get("OutputSettings", "layerscale"))
+            self.boundingBoxCheckBox.SetValue(ast.literal_eval(config.get("OutputSettings", "onlyboardedges")))
         except:
             dlg=wx.MessageDialog(None, "Error while reading config.ini file!", "Error", wx.OK|wx.ICON_INFORMATION)
             dlg.ShowModal()
@@ -236,6 +237,7 @@ class Dialog(assembly_generator_base_dialog.MainDialog):
         config["OutputSettings"]["mergefiles"] = str(self.mergeFilesCheckBox.IsChecked())
         config["OutputSettings"]["autoscaling"] = str(self.autoScaleCheckBox.IsChecked())
         config["OutputSettings"]["layerscale"] = str(self.layerScaleTextBox.GetValue())
+        config["OutputSettings"]["onlyboardedges"] = str(self.boundingBoxCheckBox.IsChecked())
 
         pluginDir = os.path.dirname(os.path.dirname(__file__))
         configPath = os.path.join(pluginDir, "config.ini")
