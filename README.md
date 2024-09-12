@@ -6,7 +6,7 @@ A tool that makes exporting good looking assembly drawings simple. Select the la
 Examples:
 - NanoLogger: [Top View](https://gitlab.com/TobiasNetzer/kicad-assembly-generator/-/raw/main/doc/nanoLogger%20-%20Assembly%20Drawing%20Top.pdf?ref_type=heads)
 - PrecisionCurrentSource: [Combined View](https://gitlab.com/TobiasNetzer/kicad-assembly-generator/-/raw/main/doc/PrecisionCurrentSource%20-%20Assembly%20Drawing%20Top%20+%20Bot.pdf)
-- [ButterStick by GregDavill](https://github.com/butterstick-fpga/butterstick-hardware): [Top + Bot View](https://gitlab.com/TobiasNetzer/kicad-assembly-generator/-/raw/main/doc/ButterStick%20-%20Assembly%20Drawing.pdf)
+- [Tigard](https://github.com/tigard-tools/tigard): [Top + Bot View](https://gitlab.com/TobiasNetzer/kicad-assembly-generator/-/raw/main/doc/tigard%20-%20Assembly%20Drawing.pdf)
 
 ## Usage
 
