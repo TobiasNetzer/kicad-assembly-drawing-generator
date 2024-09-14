@@ -132,10 +132,10 @@ class MainDialog ( wx.Dialog ):
         bSizer19.Add( self.LayerOpacitySlider, 0, 0, 5 )
 
 
-        bSizer21.Add( bSizer19, 1, 0, 5 )
+        bSizer21.Add( bSizer19, 0, 0, 5 )
 
 
-        bSizer18.Add( bSizer21, 1, 0, 5 )
+        bSizer18.Add( bSizer21, 0, 0, 5 )
 
         bSizer22 = wx.BoxSizer( wx.HORIZONTAL )
 
@@ -160,7 +160,7 @@ class MainDialog ( wx.Dialog ):
         bSizer17.Add( bSizer11, 0, wx.LEFT, 30 )
 
 
-        LayerSettings.Add( bSizer17, 1, 0, 5 )
+        LayerSettings.Add( bSizer17, 0, 0, 5 )
 
 
         bSizer1.Add( LayerSettings, 0, wx.ALL|wx.EXPAND, 5 )
@@ -204,7 +204,7 @@ class MainDialog ( wx.Dialog ):
         bSizer13.Add( self.autoScaleCheckBox, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 
-        bSizer111.Add( bSizer13, 1, 0, 5 )
+        bSizer111.Add( bSizer13, 0, 0, 5 )
 
         self.boundingBoxCheckBox = wx.CheckBox( Output.GetStaticBox(), wx.ID_ANY, _(u"Only use board edges for determining board size"), wx.DefaultPosition, wx.DefaultSize, 0 )
         bSizer111.Add( self.boundingBoxCheckBox, 0, wx.ALL, 5 )
@@ -249,12 +249,18 @@ class MainDialog ( wx.Dialog ):
 
         bSizer111.Add( bSizer12, 0, wx.EXPAND, 5 )
 
-        self.progressBar = wx.Gauge( Output.GetStaticBox(), wx.ID_ANY, 100, wx.DefaultPosition, wx.DefaultSize, wx.GA_HORIZONTAL )
-        self.progressBar.SetValue( 0 )
-        bSizer111.Add( self.progressBar, 0, wx.ALL|wx.EXPAND, 10 )
+        bSizer191 = wx.BoxSizer( wx.HORIZONTAL )
+
+        self.statusText = wx.StaticText( Output.GetStaticBox(), wx.ID_ANY, _(u"Ready"), wx.DefaultPosition, wx.DefaultSize, wx.ST_NO_AUTORESIZE )
+        self.statusText.Wrap( -1 )
+
+        bSizer191.Add( self.statusText, 1, wx.ALL|wx.EXPAND, 5 )
 
 
-        Output.Add( bSizer111, 1, wx.EXPAND, 5 )
+        bSizer111.Add( bSizer191, 0, wx.EXPAND, 5 )
+
+
+        Output.Add( bSizer111, 0, wx.EXPAND, 5 )
 
 
         bSizer1.Add( Output, 0, wx.ALL|wx.EXPAND, 5 )

@@ -248,7 +248,7 @@ class Dialog(assembly_generator_base_dialog.MainDialog):
         self.EndModal(wx.ID_CANCEL)
 
     def onClickGenerate(self, event):
-        self.progressBar.SetValue(0)
-        self.progressBar.Pulse()
+        self.statusText.SetLabel("Generating... This may take a while depending on the complexity of your design.")
         self.generateFunc(self)
-        self.progressBar.SetValue(100)
+        self.statusText.SetLabel("Done!")
+        
