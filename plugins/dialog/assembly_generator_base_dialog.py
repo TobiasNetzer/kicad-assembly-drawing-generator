@@ -28,7 +28,7 @@ class MainDialog ( wx.Dialog ):
 
         bSizer10 = wx.BoxSizer( wx.HORIZONTAL )
 
-        LayersTOP = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, _(u"Select layers top view") ), wx.VERTICAL )
+        LayersTOP = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, _(u"Layers top view") ), wx.VERTICAL )
 
         bSizer6 = wx.BoxSizer( wx.HORIZONTAL )
 
@@ -64,7 +64,7 @@ class MainDialog ( wx.Dialog ):
 
         bSizer10.Add( LayersTOP, 1, wx.ALL|wx.EXPAND, 5 )
 
-        LayersBOT = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, _(u"Select layers bottom view") ), wx.VERTICAL )
+        LayersBOT = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, _(u"Layers bottom view") ), wx.VERTICAL )
 
         bSizer7 = wx.BoxSizer( wx.HORIZONTAL )
 
