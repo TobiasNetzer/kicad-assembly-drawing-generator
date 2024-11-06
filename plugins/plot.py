@@ -84,8 +84,6 @@ def scaleTitleBlock(titleBlockSVG):
     tree = ET.parse(titleBlockSVG)
     root = tree.getroot()
 
-    ns = {"ns0": "http://www.w3.org/2000/svg"}
-
     width = float(root.attrib.get("width")[:-2])
     
     width_max = 297.0022
@@ -108,12 +106,9 @@ def scaleTitleBlock(titleBlockSVG):
     root.attrib["width"] = "297.0022mm"
     root.attrib["height"] = "210.0072mm"
     root.attrib["viewBox"] = "0 0 297.0022 210.0072"
-    
     tree.write(titleBlockSVG)
 
-def mergeLayers(dialog, board, layersToMerge, settings, combinedView, filename, tempDirectory, outputFileName):
-    rootCombined = ET.Element("{http://www.w3.org/2000/svg}svg")
-
+def getBoundingBox(dialog, board):
     if dialog.boundingBoxCheckBox.IsChecked():
         boundingBox = board.ComputeBoundingBox(True)
     else:
@@ -129,18 +124,25 @@ def mergeLayers(dialog, board, layersToMerge, settings, combinedView, filename, 
         boundingBox = board.ComputeBoundingBox(False)
         board.SetVisibleLayers(originalVisibleLayerSet)
         board.SetVisibleElements(originalVisibleElements)
+    
+    return boundingBox
+
+def mergeLayersSingleView(dialog, board, filename, tempDirectory, outputFileName):
+    if os.path.basename(tempDirectory) == "top": 
+        plotTopView = True
+    else:
+        plotTopView = False
+    
+    rootCombined = ET.Element("{http://www.w3.org/2000/svg}svg")
+
+    boundingBox = getBoundingBox(dialog, board)
 
     marginTitleBlock = 35.0000 # 3,5cm margin
-    marginFrame = 10.0000 # 1cm margin
     margin = 30.0000 # 3cm margin
     width_max = 297.0022
     height_max = 210.0072
     
-    if combinedView:
-        scalingFactorWidth = ((width_max / 2) - margin / 2 - marginFrame / 2) / (boundingBox.GetWidth() / 1000000)
-    else:
-        scalingFactorWidth = ((width_max) - margin) / (boundingBox.GetWidth() / 1000000)
-
+    scalingFactorWidth = ((width_max) - margin) / (boundingBox.GetWidth() / 1000000)
     scalingFactorHeight = ((height_max) - margin - marginTitleBlock) / (boundingBox.GetHeight() / 1000000)
     
     if scalingFactorWidth < scalingFactorHeight:
@@ -161,14 +163,10 @@ def mergeLayers(dialog, board, layersToMerge, settings, combinedView, filename, 
             dlg.ShowModal()
             dlg.Destroy()
     
-    if combinedView:
-        moveX = round((width_max / 4 / scalingFactor) - ((boundingBox.GetX() / 1000000) + ((boundingBox.GetWidth() / 1000000) / 2)) + marginFrame / 2 / scalingFactor, 4)
-    else:
-        moveX = round((width_max / 2 / scalingFactor) - ((boundingBox.GetX() / 1000000) + ((boundingBox.GetWidth() / 1000000) / 2)), 4)
-
+    moveX = round((width_max / 2 / scalingFactor) - ((boundingBox.GetX() / 1000000) + ((boundingBox.GetWidth() / 1000000) / 2)), 4)
     moveY = round(-(boundingBox.GetY() / 1000000) + (height_max / 2 / scalingFactor) - ((boundingBox.GetHeight() / 1000000) / 2) - marginTitleBlock / 2 / scalingFactor, 4)
 
-    for layer in reversed(layersToMerge):
+    for layer in reversed(dialog.checkedLayersTop if plotTopView == True else dialog.checkedLayersBot):
         # replace . in layername with _ to match output file names
         layername = layer.replace(".", "_")
         svgFile = os.path.join(tempDirectory, f"{filename}-{layername}.svg")
@@ -177,28 +175,23 @@ def mergeLayers(dialog, board, layersToMerge, settings, combinedView, filename, 
 
         groupElement = ET.Element("g")
             
-        if os.path.basename(tempDirectory) == "top":
-            if bool(settings[layer]["Mirrored"]):
-                groupElement.attrib["transform"] = f"scale({-scalingFactor},{scalingFactor})"
-                if combinedView:
-                    groupElement.attrib["transform"] += f"translate({moveX - width_max / 2 / scalingFactor - marginFrame / scalingFactor},{moveY})"
-                else:
-                    groupElement.attrib["transform"] += f"translate({moveX - width_max / scalingFactor},{moveY})"
-            else:
-                groupElement.attrib["transform"] = f"scale({scalingFactor},{scalingFactor})"
-                groupElement.attrib["transform"] += f"translate({moveX},{moveY})"
-        else:
-            if bool(settings[layer]["Mirrored"]):
+        if plotTopView:
+            if bool(dialog.settingsLayersTop[layer]["Mirrored"]):
                 groupElement.attrib["transform"] = f"scale({-scalingFactor},{scalingFactor})"
                 groupElement.attrib["transform"] += f"translate({moveX - width_max / scalingFactor},{moveY})"
             else:
                 groupElement.attrib["transform"] = f"scale({scalingFactor},{scalingFactor})"
-                if combinedView:
-                    groupElement.attrib["transform"] += f"translate({moveX + width_max / 2 / scalingFactor - marginFrame / scalingFactor},{moveY})"
-                else:
-                    groupElement.attrib["transform"] += f"translate({moveX},{moveY})"
-
-        layerOpacity = int(settings[layer]["Opacity"]) / 100
+                groupElement.attrib["transform"] += f"translate({moveX},{moveY})"
+            layerOpacity = int(dialog.settingsLayersTop[layer]["Opacity"]) / 100
+        else:
+            if bool(dialog.settingsLayersBot[layer]["Mirrored"]):
+                groupElement.attrib["transform"] = f"scale({-scalingFactor},{scalingFactor})"
+                groupElement.attrib["transform"] += f"translate({moveX - width_max / scalingFactor},{moveY})"
+            else:
+                groupElement.attrib["transform"] = f"scale({scalingFactor},{scalingFactor})"
+                groupElement.attrib["transform"] += f"translate({moveX},{moveY})"
+            layerOpacity = int(dialog.settingsLayersBot[layer]["Opacity"]) / 100
+        
         groupElement.attrib["style"] = f"opacity:{layerOpacity}"
 
         for element in root:
@@ -228,7 +221,102 @@ def mergeLayers(dialog, board, layersToMerge, settings, combinedView, filename, 
     treeCombined = ET.ElementTree(rootCombined)
     treeCombined.write(outputFileName)
 
-def generateFinalSVG(svgFiles, outputFileName):
+def mergeLayersCombinedView(dialog, board, filename, tempDirectory, outputFileName):
+    if os.path.basename(tempDirectory) == "top": 
+        plotTopView = True
+    else:
+        plotTopView = False
+
+    rootCombined = ET.Element("{http://www.w3.org/2000/svg}svg")
+
+    boundingBox = getBoundingBox(dialog, board)
+
+    marginTitleBlock = 35.0000 # 3,5cm margin
+    marginFrame = 10.0000 # 1cm margin
+    margin = 30.0000 # 3cm margin
+    width_max = 297.0022
+    height_max = 210.0072
+    
+    scalingFactorWidth = ((width_max / 2) - margin / 2 - marginFrame / 2) / (boundingBox.GetWidth() / 1000000)
+    scalingFactorHeight = ((height_max) - margin - marginTitleBlock) / (boundingBox.GetHeight() / 1000000)
+    
+    if scalingFactorWidth < scalingFactorHeight:
+        scalingFactor = round(scalingFactorWidth, 4)
+    else:
+        scalingFactor = round(scalingFactorHeight, 4)
+
+    if not dialog.autoScaleCheckBox.IsChecked():
+        try:
+            if scalingFactor < float(dialog.layerScaleTextBox.GetValue()):
+                dlg=wx.MessageDialog(None, "Entered scale factor is too large. Auto scale factor:" + str(scalingFactor) + " is used.", "Scaling issue", wx.OK|wx.ICON_INFORMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+            else:
+                scalingFactor = float(dialog.layerScaleTextBox.GetValue())
+        except ValueError:
+            dlg=wx.MessageDialog(None, "Entered scale factor is not a number. Auto scale factor:" + str(scalingFactor) + " is used.", "Scaling issue", wx.OK|wx.ICON_INFORMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+    
+    moveX = round((width_max / 4 / scalingFactor) - ((boundingBox.GetX() / 1000000) + ((boundingBox.GetWidth() / 1000000) / 2)) + marginFrame / 2 / scalingFactor, 4)
+    moveY = round(-(boundingBox.GetY() / 1000000) + (height_max / 2 / scalingFactor) - ((boundingBox.GetHeight() / 1000000) / 2) - marginTitleBlock / 2 / scalingFactor, 4)
+
+    for layer in reversed(dialog.checkedLayersTop if plotTopView == True else dialog.checkedLayersBot):
+        # replace . in layername with _ to match output file names
+        layername = layer.replace(".", "_")
+        svgFile = os.path.join(tempDirectory, f"{filename}-{layername}.svg")
+        tree = ET.parse(svgFile)
+        root = tree.getroot()
+
+        groupElement = ET.Element("g")
+            
+        if plotTopView:
+            if bool(dialog.settingsLayersTop[layer]["Mirrored"]):
+                groupElement.attrib["transform"] = f"scale({-scalingFactor},{scalingFactor})"
+                groupElement.attrib["transform"] += f"translate({moveX - width_max / 2 / scalingFactor - marginFrame / scalingFactor},{moveY})"
+            else:
+                groupElement.attrib["transform"] = f"scale({scalingFactor},{scalingFactor})"
+                groupElement.attrib["transform"] += f"translate({moveX},{moveY})"
+            layerOpacity = int(dialog.settingsLayersTop[layer]["Opacity"]) / 100
+        else:
+            if bool(dialog.settingsLayersBot[layer]["Mirrored"]):
+                groupElement.attrib["transform"] = f"scale({-scalingFactor},{scalingFactor})"
+                groupElement.attrib["transform"] += f"translate({moveX - width_max / scalingFactor},{moveY})"
+            else:
+                groupElement.attrib["transform"] = f"scale({scalingFactor},{scalingFactor})"
+                groupElement.attrib["transform"] += f"translate({moveX + width_max / 2 / scalingFactor - marginFrame / scalingFactor},{moveY})"
+            layerOpacity = int(dialog.settingsLayersBot[layer]["Opacity"]) / 100
+        
+        groupElement.attrib["style"] = f"opacity:{layerOpacity}"
+
+        for element in root:
+            groupElement.append(element)
+
+        root.clear()
+        root.append(groupElement)
+        root.attrib["xmlns:svg"] = "http://www.w3.org/2000/svg"
+        root.attrib["xmlns"] = "http://www.w3.org/2000/svg"
+        root.attrib["xmlns:xlink"] = "http://www.w3.org/1999/xlink"
+        root.attrib["version"] = "1.1"
+        root.attrib["width"] = "297.0022mm"
+        root.attrib["height"] = "210.0072mm"
+        root.attrib["viewBox"] = "0 0 297.0022 210.0072"
+
+        tree.write(svgFile)
+        
+        treeCombined = ET.parse(svgFile)
+        svg = treeCombined.getroot()
+        for child in svg:
+            rootCombined.append(child)
+
+    rootCombined.attrib["width"] = "297.0022mm"
+    rootCombined.attrib["height"] = "210.0072mm"
+    rootCombined.attrib["viewBox"] = "0 0 297.0022 210.0072"
+
+    treeCombined = ET.ElementTree(rootCombined)
+    treeCombined.write(outputFileName)
+
+def mergeSVGs(svgFiles, outputFileName):
     root = ET.Element("{http://www.w3.org/2000/svg}svg")
     for file in svgFiles:
 
@@ -270,10 +358,10 @@ def generateAssembly(dialog):
         scaleTitleBlock(os.path.join(tempDirectory,filename + "-Title_Block.svg"))
 
         # Combine SVG for the Top view
-        mergeLayers(dialog, board, dialog.checkedLayersTop, dialog.settingsLayersTop, False, filename, os.path.join(tempDirectory, "top"), os.path.join(tempDirectory, "combined_top.svg"))
+        mergeLayersSingleView(dialog, board, filename, os.path.join(tempDirectory, "top"), os.path.join(tempDirectory, "combined_top.svg"))
 
         # Combine all files into one final output file
-        generateFinalSVG([os.path.join(tempDirectory, "combined_top.svg"), os.path.join(tempDirectory,filename +"-Title_Block.svg")], os.path.join(tempDirectory, "final.svg"))
+        mergeSVGs([os.path.join(tempDirectory, "combined_top.svg"), os.path.join(tempDirectory,filename +"-Title_Block.svg")], os.path.join(tempDirectory, "final.svg"))
         try:
             f = open(os.path.join(tempDirectory, "final.svg"))
             cairosvg.svg2pdf(file_obj=f, write_to=os.path.join(outputDirectory, filename + " - Assembly Drawing Top.pdf"))
@@ -292,10 +380,10 @@ def generateAssembly(dialog):
         scaleTitleBlock(os.path.join(tempDirectory,filename + "-Title_Block.svg"))
 
         # Combine SVG for the Bot view
-        mergeLayers(dialog, board, dialog.checkedLayersBot, dialog.settingsLayersBot, False, filename, os.path.join(tempDirectory, "bot"), os.path.join(tempDirectory, "combined_bot.svg"))
+        mergeLayersSingleView(dialog, board, filename, os.path.join(tempDirectory, "bot"), os.path.join(tempDirectory, "combined_bot.svg"))
 
         # Combine all files into one final output file
-        generateFinalSVG([os.path.join(tempDirectory, "combined_bot.svg"), os.path.join(tempDirectory,filename +"-Title_Block.svg")], os.path.join(tempDirectory, "final.svg"))
+        mergeSVGs([os.path.join(tempDirectory, "combined_bot.svg"), os.path.join(tempDirectory,filename +"-Title_Block.svg")], os.path.join(tempDirectory, "final.svg"))
         try:
             f = open(os.path.join(tempDirectory, "final.svg"))
             cairosvg.svg2pdf(file_obj=f, write_to=os.path.join(outputDirectory, filename + " - Assembly Drawing Bot.pdf"))
@@ -313,12 +401,12 @@ def generateAssembly(dialog):
         scaleTitleBlock(os.path.join(tempDirectory,filename + "-Title_Block.svg"))
 
         # Combine SVG for the Top view
-        mergeLayers(dialog, board, dialog.checkedLayersTop, dialog.settingsLayersTop, True, filename, os.path.join(tempDirectory, "top"), os.path.join(tempDirectory, "combined_top.svg"))
+        mergeLayersCombinedView(dialog, board, filename, os.path.join(tempDirectory, "top"), os.path.join(tempDirectory, "combined_top.svg"))
 
         # Combine SVG for the Bot view
-        mergeLayers(dialog, board, dialog.checkedLayersBot, dialog.settingsLayersBot, True, filename, os.path.join(tempDirectory, "bot"), os.path.join(tempDirectory, "combined_bot.svg"))
+        mergeLayersCombinedView(dialog, board, filename, os.path.join(tempDirectory, "bot"), os.path.join(tempDirectory, "combined_bot.svg"))
 
-        generateFinalSVG([os.path.join(tempDirectory, "combined_top.svg"), os.path.join(tempDirectory, "combined_bot.svg"), os.path.join(tempDirectory,filename +"-Title_Block.svg")], os.path.join(tempDirectory, "final.svg"))
+        mergeSVGs([os.path.join(tempDirectory, "combined_top.svg"), os.path.join(tempDirectory, "combined_bot.svg"), os.path.join(tempDirectory,filename +"-Title_Block.svg")], os.path.join(tempDirectory, "final.svg"))
         try:
             f = open(os.path.join(tempDirectory, "final.svg"))
             cairosvg.svg2pdf(file_obj=f, write_to=os.path.join(outputDirectory, filename + " - Assembly Drawing Top + Bot.pdf"))
