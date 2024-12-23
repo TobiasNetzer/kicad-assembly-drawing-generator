@@ -5,6 +5,7 @@ A tool that makes exporting good looking assembly drawings simple. Select the la
 
 Examples:
 - NanoLogger: [Top View](https://gitlab.com/TobiasNetzer/kicad-assembly-drawing-generator/-/raw/main/doc/nanoLogger%20-%20Assembly%20Drawing%20Top.pdf?ref_type=heads)
+- NanoLogger: [Top View Color](https://gitlab.com/TobiasNetzer/kicad-assembly-drawing-generator/-/raw/main/doc/nanoLogger%20-%20Assembly%20Drawing%20Top%20Color.pdf?ref_type=heads)
 - PrecisionCurrentSource: [Combined View](https://gitlab.com/TobiasNetzer/kicad-assembly-drawing-generator/-/raw/main/doc/PrecisionCurrentSource%20-%20Assembly%20Drawing%20Top%20+%20Bot.pdf)
 - [Tigard](https://github.com/tigard-tools/tigard): [Top + Bot View](https://gitlab.com/TobiasNetzer/kicad-assembly-drawing-generator/-/raw/main/doc/tigard%20-%20Assembly%20Drawing.pdf)
 

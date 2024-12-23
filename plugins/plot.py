@@ -22,16 +22,17 @@ def exportLayersFromKiCad(dialog, board, directory):
     plotController = pcbnew.PLOT_CONTROLLER(board)
     plotOptions = plotController.GetPlotOptions()
     plotOptions.SetPlotFrameRef(False)
-    plotOptions.SetPlotViaOnMaskLayer(False)
+    try:
+        plotOptions.SetPlotViaOnMaskLayer(False)
+    except AttributeError:
+        pass # Deprecated in KiCad V9
     plotOptions.SetAutoScale(False)
     plotOptions.SetMirror(False)
     plotOptions.SetUseGerberAttributes(False)
     plotOptions.SetScale(1)
     plotOptions.SetUseAuxOrigin(False)
-    plotOptions.SetNegative(False)
     plotOptions.SetPlotInvisibleText(False)
     plotOptions.SetSubtractMaskFromSilk(False)
-    plotController.SetColorMode(False)
     plotOptions.SetOutputDirectory(directory)
 
     # Plot the Title Block and frame, will cause problems if User_9 layer is used...
@@ -41,6 +42,26 @@ def exportLayersFromKiCad(dialog, board, directory):
     plotController.OpenPlotfile("Title_Block", pcbnew.PLOT_FORMAT_SVG,"")
     plotController.PlotLayer()
     plotController.ClosePlot()
+
+    # Coloring is done after exporting, since we can't directly edit the color settings here.
+    #settingsManager = pcbnew.GetSettingsManager() 
+    #colorSettings = settingsManager.GetMigratedColorSettings()
+    #plotOptions.SetColorSettings(colorSettings)
+    #plotOptions.SetBlackAndWhite(True)
+    plotController.SetColorMode(False)
+
+    if dialog.indicateDNP.IsChecked():
+        try:
+            if dialog.indicateDNP.IsChecked():
+                plotOptions.SetHideDNPFPsOnFabLayers(dialog.DNPHide.GetValue())
+                plotOptions.SetCrossoutDNPFPsOnFabLayers(dialog.DNPCrossOut.GetValue())
+            else:
+                plotOptions.SetHideDNPFPsOnFabLayers(False)
+                plotOptions.SetCrossoutDNPFPsOnFabLayers(False)
+        except:
+            dlg=wx.MessageDialog(None, "Please uncheck 'Indicate DNP on Fab layer'. This feature is only supported by KiCad version 9 and up.", "Not supported", wx.OK|wx.ICON_INFORMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
 
     # Plot Layers
     plotOptions.SetPlotFrameRef(False)
@@ -54,6 +75,7 @@ def exportLayersFromKiCad(dialog, board, directory):
         elif dialog.settingsLayersTop[layer]["DrillMarks"] == 2:
             plotOptions.SetDrillMarksType(pcbnew.DRILL_MARKS_FULL_DRILL_SHAPE)
 
+        plotOptions.SetNegative(dialog.settingsLayersTop[layer]["Negative"])
         plotOptions.SetPlotReference(dialog.settingsLayersTop[layer]["PlotReferenceDesignators"])
         plotOptions.SetPlotValue(dialog.settingsLayersTop[layer]["PlotFootprintValues"])
 
@@ -72,6 +94,7 @@ def exportLayersFromKiCad(dialog, board, directory):
         elif dialog.settingsLayersBot[layer]["DrillMarks"] == 2:
             plotOptions.SetDrillMarksType(pcbnew.DRILL_MARKS_FULL_DRILL_SHAPE)
 
+        plotOptions.SetNegative(dialog.settingsLayersBot[layer]["Negative"])
         plotOptions.SetPlotReference(dialog.settingsLayersBot[layer]["PlotReferenceDesignators"])
         plotOptions.SetPlotValue(dialog.settingsLayersBot[layer]["PlotFootprintValues"])
         
@@ -107,6 +130,20 @@ def scaleTitleBlock(titleBlockSVG):
     root.attrib["height"] = "210.0072mm"
     root.attrib["viewBox"] = "0 0 297.0022 210.0072"
     tree.write(titleBlockSVG)
+
+# Currently no way to set color during KiCad export, so we have to edit the svg itself
+def colorSVG(svgFile, colorRGB):
+    if colorRGB != 0:
+        with open(svgFile, 'r') as file:
+            svg = file.read()
+
+        wxcolor = wx.Colour()
+        wxcolor.SetRGB(colorRGB)
+        colorHTML = wxcolor.GetAsString(wx.C2S_HTML_SYNTAX)
+        coloredSVG = svg.replace("#000000", colorHTML)
+            
+        with open(svgFile, 'w') as file:
+            file.write(coloredSVG)
 
 def getBoundingBox(dialog, board):
     if dialog.boundingBoxCheckBox.IsChecked():
@@ -170,6 +207,7 @@ def mergeLayersSingleView(dialog, board, filename, tempDirectory, outputFileName
         # replace . in layername with _ to match output file names
         layername = layer.replace(".", "_")
         svgFile = os.path.join(tempDirectory, f"{filename}-{layername}.svg")
+        colorSVG(svgFile, dialog.settingsLayersTop[layer]["Color"] if plotTopView == True else dialog.settingsLayersBot[layer]["Color"])
         tree = ET.parse(svgFile)
         root = tree.getroot()
 
@@ -265,6 +303,7 @@ def mergeLayersCombinedView(dialog, board, filename, tempDirectory, outputFileNa
         # replace . in layername with _ to match output file names
         layername = layer.replace(".", "_")
         svgFile = os.path.join(tempDirectory, f"{filename}-{layername}.svg")
+        colorSVG(svgFile, dialog.settingsLayersTop[layer]["Color"] if plotTopView == True else dialog.settingsLayersBot[layer]["Color"])
         tree = ET.parse(svgFile)
         root = tree.getroot()
 
@@ -336,7 +375,7 @@ def generateAssembly(dialog):
     try:
         import cairosvg
     except ImportError as e:
-        dlg=wx.MessageDialog(None, "CairoSVG is not installed. Run 'python -m pip install cairosvg' from kicad command prompt.", "Error", wx.OK|wx.ICON_INFORMATION)
+        dlg=wx.MessageDialog(None, "CairoSVG is not installed. Run 'python -m pip install cairosvg' from kicad command prompt and restart kicad.", "Error", wx.OK|wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         return

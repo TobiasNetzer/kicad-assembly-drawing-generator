@@ -42,6 +42,52 @@ class Dialog(assembly_generator_base_dialog.MainDialog):
             self.autoScaleCheckBox.SetValue(ast.literal_eval(config.get("OutputSettings", "autoscaling")))
             self.layerScaleTextBox.SetValue(config.get("OutputSettings", "layerscale"))
             self.boundingBoxCheckBox.SetValue(ast.literal_eval(config.get("OutputSettings", "onlyboardedges")))
+            self.indicateDNP.SetValue(ast.literal_eval(config.get("OutputSettings", "indicatednp")))
+            self.DNPHide.SetValue(ast.literal_eval(config.get("OutputSettings", "dnphide")))
+            self.DNPCrossOut.SetValue(ast.literal_eval(config.get("OutputSettings", "dnpcross")))
+
+            #Check if config file is still up to date. Needed for the changes made in KiCad V9.
+            i = pcbnew.PCBNEW_LAYER_ID_START
+            while i < pcbnew.PCBNEW_LAYER_ID_START + pcbnew.PCB_LAYER_ID_COUNT:
+                layerStdName = pcbnew.BOARD.GetStandardLayerName(i)
+
+                try:
+                    if self.settingsLayersTop[layerStdName]["ID"] != i:
+                        self.settingsLayersTop[layerStdName]["ID"] = i
+                except KeyError:
+                    self.settingsLayersTop.update({
+                        layerStdName: {
+                        "ID": i,
+                        "Opacity": 100,
+                        "Mirrored": False,
+                        "Negative": False,
+                        "DrillMarks": 2,
+                        "PlotReferenceDesignators": True,
+                        "PlotFootprintValues": True,
+                        "Color": 0
+                        }
+                    })
+                    self.sortOrderLayersTop.append(layerStdName)
+
+                try:
+                    if self.settingsLayersBot[layerStdName]["ID"] != i:
+                        self.settingsLayersBot[layerStdName]["ID"] = i
+                except KeyError:
+                    self.settingsLayersBot.update({
+                        layerStdName: {
+                        "ID": i,
+                        "Opacity": 100,
+                        "Mirrored": True,
+                        "Negative": False,
+                        "DrillMarks": 2,
+                        "PlotReferenceDesignators": True,
+                        "PlotFootprintValues": True,
+                        "Color": 0
+                        }
+                    })
+                    self.sortOrderLayersBot.append(layerStdName)
+                i += 1
+
         except:
             dlg=wx.MessageDialog(None, "Error while reading config.ini file!", "Error", wx.OK|wx.ICON_INFORMATION)
             dlg.ShowModal()
@@ -64,9 +110,11 @@ class Dialog(assembly_generator_base_dialog.MainDialog):
                     "ID": i,
                     "Opacity": 100,
                     "Mirrored": False,
+                    "Negative": False,
                     "DrillMarks": 2,
                     "PlotReferenceDesignators": True,
-                    "PlotFootprintValues": True
+                    "PlotFootprintValues": True,
+                    "Color": 0
                     }
                 })
                 self.settingsLayersBot.update({
@@ -74,9 +122,11 @@ class Dialog(assembly_generator_base_dialog.MainDialog):
                     "ID": i,
                     "Opacity": 100,
                     "Mirrored": True,
+                    "Negative": False,
                     "DrillMarks": 2,
                     "PlotReferenceDesignators": True,
-                    "PlotFootprintValues": True
+                    "PlotFootprintValues": True,
+                    "Color": 0
                     }
                 })
 
@@ -88,37 +138,53 @@ class Dialog(assembly_generator_base_dialog.MainDialog):
             self.sortOrderLayersBot.sort()
 
         self.checkListTop.SetItems(self.sortOrderLayersTop)
-        self.checkListTop.SetCheckedStrings(self.checkedLayersTop)
+        self.checkListTop.SetCheckedStrings(tuple(self.checkedLayersTop))
         self.checkListBottom.SetItems(self.sortOrderLayersBot)
-        self.checkListBottom.SetCheckedStrings(self.checkedLayersBot)
+        self.checkListBottom.SetCheckedStrings(tuple(self.checkedLayersBot))
         
         if self.autoScaleCheckBox.IsChecked():
             self.layerScaleTextBox.Disable()
         else:
             self.layerScaleTextBox.Enable()
 
+        if self.indicateDNP.IsChecked():
+            self.DNPHide.Enable()
+            self.DNPCrossOut.Enable()
+        else:
+            self.DNPHide.Disable()
+            self.DNPCrossOut.Disable()
+
     def onSelectTop(self, event):
         self.checkListBottom.Deselect(self.checkListBottom.GetSelection())
         self.mirrorLayerCheckBox.SetValue(self.settingsLayersTop[self.checkListTop.GetString(self.checkListTop.GetSelection())]["Mirrored"])
+        self.negativeLayerCheckBox.SetValue(self.settingsLayersTop[self.checkListTop.GetString(self.checkListTop.GetSelection())]["Negative"])
         self.LayerOpacitySlider.SetValue(self.settingsLayersTop[self.checkListTop.GetString(self.checkListTop.GetSelection())]["Opacity"])
         self.drillMarksChoice.SetSelection(self.settingsLayersTop[self.checkListTop.GetString(self.checkListTop.GetSelection())]["DrillMarks"])
         self.plotRefDesignatorsCheckBox.SetValue(self.settingsLayersTop[self.checkListTop.GetString(self.checkListTop.GetSelection())]["PlotReferenceDesignators"])
         self.plotFootprintValuesCheckBox.SetValue(self.settingsLayersTop[self.checkListTop.GetString(self.checkListTop.GetSelection())]["PlotFootprintValues"])
+        color = wx.Colour()
+        color.SetRGB(self.settingsLayersTop[self.checkListTop.GetString(self.checkListTop.GetSelection())]["Color"])
+        self.colourPicker.SetColour(color)
+        
     
     def onSelectBottom(self, event):
         self.checkListTop.Deselect(self.checkListTop.GetSelection())
         self.mirrorLayerCheckBox.SetValue(self.settingsLayersBot[self.checkListBottom.GetString(self.checkListBottom.GetSelection())]["Mirrored"])
+        self.negativeLayerCheckBox.SetValue(self.settingsLayersBot[self.checkListBottom.GetString(self.checkListBottom.GetSelection())]["Negative"])
         self.LayerOpacitySlider.SetValue(self.settingsLayersBot[self.checkListBottom.GetString(self.checkListBottom.GetSelection())]["Opacity"])
         self.drillMarksChoice.SetSelection(self.settingsLayersBot[self.checkListBottom.GetString(self.checkListBottom.GetSelection())]["DrillMarks"])
         self.plotRefDesignatorsCheckBox.SetValue(self.settingsLayersBot[self.checkListBottom.GetString(self.checkListBottom.GetSelection())]["PlotReferenceDesignators"])
         self.plotFootprintValuesCheckBox.SetValue(self.settingsLayersBot[self.checkListBottom.GetString(self.checkListBottom.GetSelection())]["PlotFootprintValues"])
+        color = wx.Colour()
+        color.SetRGB(self.settingsLayersBot[self.checkListBottom.GetString(self.checkListBottom.GetSelection())]["Color"])
+        self.colourPicker.SetColour(color)
 
 
     def onSelectionChangedTop(self, event):
-        self.checkedLayersTop = self.checkListTop.GetCheckedStrings()
+        self.checkedLayersTop = list(self.checkListTop.GetCheckedStrings())
 
     def onSelectionChangedBottom(self, event):
-        self.checkedLayersBot = self.checkListBottom.GetCheckedStrings()
+        self.checkedLayersBot = list(self.checkListBottom.GetCheckedStrings())
 
     def onClickUpTopViewBtn(self, event):
         if self.checkListTop.GetSelection() > 0:
@@ -129,10 +195,10 @@ class Dialog(assembly_generator_base_dialog.MainDialog):
             self.sortOrderLayersTop[currentSelection] = temp
         
             self.checkListTop.SetItems(self.sortOrderLayersTop)
-            self.checkListTop.SetCheckedStrings(self.checkedLayersTop)
+            self.checkListTop.SetCheckedStrings(tuple(self.checkedLayersTop))
             self.checkListTop.Select(currentSelection - 1)
             
-            self.checkedLayersTop = self.checkListTop.GetCheckedStrings()   
+            self.checkedLayersTop = list(self.checkListTop.GetCheckedStrings())
     
     def onClickDownTopViewBtn(self, event):
         if self.checkListTop.GetSelection() < pcbnew.PCB_LAYER_ID_COUNT:
@@ -143,12 +209,10 @@ class Dialog(assembly_generator_base_dialog.MainDialog):
             self.sortOrderLayersTop[currentSelection] = temp
         
             self.checkListTop.SetItems(self.sortOrderLayersTop)
-            self.checkListTop.SetCheckedStrings(self.checkedLayersTop)
+            self.checkListTop.SetCheckedStrings(tuple(self.checkedLayersTop))
             self.checkListTop.Select(currentSelection + 1)
             
-            self.checkedLayersTop = self.checkListTop.GetCheckedStrings()
-
-            
+            self.checkedLayersTop = list(self.checkListTop.GetCheckedStrings())
 
     def onClickUpBottomViewBtn(self, event):
         if self.checkListBottom.GetSelection() > 0:
@@ -178,12 +242,17 @@ class Dialog(assembly_generator_base_dialog.MainDialog):
 
             self.checkedLayersBot = self.checkListBottom.GetCheckedStrings()
 
-
     def onMirrorLayerCheckBox(self, event):
         if self.checkListTop.GetSelection() != -1: 
             self.settingsLayersTop[self.checkListTop.GetString(self.checkListTop.GetSelection())]["Mirrored"] = self.mirrorLayerCheckBox.IsChecked()
         elif self.checkListBottom.GetSelection() != -1:
             self.settingsLayersBot[self.checkListBottom.GetString(self.checkListBottom.GetSelection())]["Mirrored"] = self.mirrorLayerCheckBox.IsChecked()
+
+    def onNegativeLayerCheckBox(self, event):
+        if self.checkListTop.GetSelection() != -1: 
+            self.settingsLayersTop[self.checkListTop.GetString(self.checkListTop.GetSelection())]["Negative"] = self.negativeLayerCheckBox.IsChecked()
+        elif self.checkListBottom.GetSelection() != -1:
+            self.settingsLayersBot[self.checkListBottom.GetString(self.checkListBottom.GetSelection())]["Negative"] = self.negativeLayerCheckBox.IsChecked()
 
     def onPlotRefDesignatorsCheckBox(self, event):
         if self.checkListTop.GetSelection() != -1: 
@@ -197,6 +266,12 @@ class Dialog(assembly_generator_base_dialog.MainDialog):
         elif self.checkListBottom.GetSelection() != -1:
             self.settingsLayersBot[self.checkListBottom.GetString(self.checkListBottom.GetSelection())]["PlotFootprintValues"] = self.plotFootprintValuesCheckBox.IsChecked()
 
+    def onColourPickerColourChanged(self, event):
+        color = self.colourPicker.GetColour()
+        if self.checkListTop.GetSelection() != -1: 
+            self.settingsLayersTop[self.checkListTop.GetString(self.checkListTop.GetSelection())]["Color"] = color.GetRGB()
+        elif self.checkListBottom.GetSelection() != -1:
+            self.settingsLayersBot[self.checkListBottom.GetString(self.checkListBottom.GetSelection())]["Color"] = color.GetRGB()
 
     def onOpacitySliderChange(self, event):
         if self.checkListTop.GetSelection() != -1:
@@ -216,10 +291,18 @@ class Dialog(assembly_generator_base_dialog.MainDialog):
         elif self.checkListBottom.GetSelection() != -1:
             self.settingsLayersBot[self.checkListBottom.GetString(self.checkListBottom.GetSelection())]["DrillMarks"] = self.drillMarksChoice.GetSelection()
 
+    def onIndicateDNPCheckBox(self, event):
+        if self.indicateDNP.IsChecked():
+            self.DNPHide.Enable()
+            self.DNPCrossOut.Enable()
+        else:
+            self.DNPHide.Disable()
+            self.DNPCrossOut.Disable()
+
     def onClickSaveConfig(self, event):
 
-        self.checkedLayersTop = self.checkListTop.GetCheckedStrings()
-        self.checkedLayersBot = self.checkListBottom.GetCheckedStrings()
+        self.checkedLayersTop = list(self.checkListTop.GetCheckedStrings())
+        self.checkedLayersBot = list(self.checkListBottom.GetCheckedStrings())
 
         config = configparser.ConfigParser()
         config["LayersTop"] = {}
@@ -238,6 +321,9 @@ class Dialog(assembly_generator_base_dialog.MainDialog):
         config["OutputSettings"]["autoscaling"] = str(self.autoScaleCheckBox.IsChecked())
         config["OutputSettings"]["layerscale"] = str(self.layerScaleTextBox.GetValue())
         config["OutputSettings"]["onlyboardedges"] = str(self.boundingBoxCheckBox.IsChecked())
+        config["OutputSettings"]["indicatednp"] = str(self.indicateDNP.IsChecked())
+        config["OutputSettings"]["dnphide"] = str(self.DNPHide.GetValue())
+        config["OutputSettings"]["dnpcross"] = str(self.DNPCrossOut.GetValue())
 
         pluginDir = os.path.dirname(os.path.dirname(__file__))
         configPath = os.path.join(pluginDir, "config.ini")

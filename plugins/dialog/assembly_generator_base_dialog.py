@@ -20,9 +20,9 @@ _ = gettext.gettext
 class MainDialog ( wx.Dialog ):
 
     def __init__( self, parent ):
-        wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"Assembly drawing generator"), pos = wx.DefaultPosition, size = wx.Size( 500,650 ), style = wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.SYSTEM_MENU )
+        wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"Assembly drawing generator"), pos = wx.DefaultPosition, size = wx.Size( 550,750 ), style = wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.SYSTEM_MENU )
 
-        self.SetSizeHints( self.FromDIP(wx.Size( 500,650 )), wx.DefaultSize )
+        self.SetSizeHints( self.FromDIP(wx.Size( 550,750 )), wx.DefaultSize )
 
         bSizer1 = wx.BoxSizer( wx.VERTICAL )
 
@@ -121,6 +121,14 @@ class MainDialog ( wx.Dialog ):
         self.drillMarksChoice.SetSelection( 2 )
         bSizer21.Add( self.drillMarksChoice, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
+        self.m_staticText6 = wx.StaticText( LayerSettings.GetStaticBox(), wx.ID_ANY, _(u"Color:"), wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.m_staticText6.Wrap( -1 )
+
+        bSizer21.Add( self.m_staticText6, 0, wx.ALIGN_CENTER, 5 )
+
+        self.colourPicker = wx.ColourPickerCtrl( LayerSettings.GetStaticBox(), wx.ID_ANY, wx.Colour( 0, 0, 0 ), wx.DefaultPosition, wx.DefaultSize, wx.CLRP_DEFAULT_STYLE )
+        bSizer21.Add( self.colourPicker, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
+
         bSizer19 = wx.BoxSizer( wx.HORIZONTAL )
 
         self.layerOpacityText = wx.StaticText( LayerSettings.GetStaticBox(), wx.ID_ANY, _(u"Opacity:"), wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -142,6 +150,9 @@ class MainDialog ( wx.Dialog ):
         self.mirrorLayerCheckBox = wx.CheckBox( LayerSettings.GetStaticBox(), wx.ID_ANY, _(u"Mirror layer"), wx.DefaultPosition, wx.DefaultSize, 0 )
         bSizer22.Add( self.mirrorLayerCheckBox, 1, wx.ALL, 5 )
 
+        self.negativeLayerCheckBox = wx.CheckBox( LayerSettings.GetStaticBox(), wx.ID_ANY, _(u"Negative layer"), wx.DefaultPosition, wx.DefaultSize, 0 )
+        bSizer22.Add( self.negativeLayerCheckBox, 0, wx.ALL, 5 )
+
         self.plotRefDesignatorsCheckBox = wx.CheckBox( LayerSettings.GetStaticBox(), wx.ID_ANY, _(u"Plot reference designators"), wx.DefaultPosition, wx.DefaultSize, 0 )
         bSizer22.Add( self.plotRefDesignatorsCheckBox, 0, wx.ALL, 5 )
 
@@ -150,6 +161,24 @@ class MainDialog ( wx.Dialog ):
 
 
         bSizer18.Add( bSizer22, 0, 0, 5 )
+
+        self.m_staticline2 = wx.StaticLine( LayerSettings.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.LI_HORIZONTAL )
+        bSizer18.Add( self.m_staticline2, 0, wx.EXPAND |wx.ALL, 5 )
+
+        bSizer221 = wx.BoxSizer( wx.HORIZONTAL )
+
+        self.indicateDNP = wx.CheckBox( LayerSettings.GetStaticBox(), wx.ID_ANY, _(u"Indicate DNP on Fab layer:"), wx.DefaultPosition, wx.DefaultSize, 0 )
+        bSizer221.Add( self.indicateDNP, 0, wx.ALL, 5 )
+
+        self.DNPHide = wx.RadioButton( LayerSettings.GetStaticBox(), wx.ID_ANY, _(u"Hide"), wx.DefaultPosition, wx.DefaultSize, wx.RB_GROUP )
+        bSizer221.Add( self.DNPHide, 0, wx.ALL, 5 )
+
+        self.DNPCrossOut = wx.RadioButton( LayerSettings.GetStaticBox(), wx.ID_ANY, _(u"Cross-out"), wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.DNPCrossOut.SetValue( True )
+        bSizer221.Add( self.DNPCrossOut, 0, wx.ALL, 5 )
+
+
+        bSizer18.Add( bSizer221, 1, wx.EXPAND, 5 )
 
 
         bSizer17.Add( bSizer18, 0, wx.ALL, 5 )
@@ -188,10 +217,10 @@ class MainDialog ( wx.Dialog ):
 
         bSizer13 = wx.BoxSizer( wx.HORIZONTAL )
 
-        self.layerScaleText = wx.StaticText( Output.GetStaticBox(), wx.ID_ANY, _(u"Layer scale:"), wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.layerScaleText.Wrap( -1 )
+        self.scaleFactorText = wx.StaticText( Output.GetStaticBox(), wx.ID_ANY, _(u"Scale factor:"), wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.scaleFactorText.Wrap( -1 )
 
-        bSizer13.Add( self.layerScaleText, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+        bSizer13.Add( self.scaleFactorText, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 
         self.layerScaleTextBox = wx.TextCtrl( Output.GetStaticBox(), wx.ID_ANY, _(u"1"), wx.DefaultPosition, self.FromDIP(wx.Size( 50,-1 )), 0 )
         self.layerScaleTextBox.SetMaxLength( 3 )
@@ -281,10 +310,13 @@ class MainDialog ( wx.Dialog ):
         self.upBottomViewBtn.Bind( wx.EVT_BUTTON, self.onClickUpBottomViewBtn )
         self.downBottomViewBtn.Bind( wx.EVT_BUTTON, self.onClickDownBottomViewBtn )
         self.drillMarksChoice.Bind( wx.EVT_CHOICE, self.onDrillMarkChanged )
+        self.colourPicker.Bind( wx.EVT_COLOURPICKER_CHANGED, self.onColourPickerColourChanged )
         self.LayerOpacitySlider.Bind( wx.EVT_SLIDER, self.onOpacitySliderChange )
         self.mirrorLayerCheckBox.Bind( wx.EVT_CHECKBOX, self.onMirrorLayerCheckBox )
+        self.negativeLayerCheckBox.Bind( wx.EVT_CHECKBOX, self.onNegativeLayerCheckBox )
         self.plotRefDesignatorsCheckBox.Bind( wx.EVT_CHECKBOX, self.onPlotRefDesignatorsCheckBox )
         self.plotFootprintValuesCheckBox.Bind( wx.EVT_CHECKBOX, self.onPlotFootprintValuesCheckBox )
+        self.indicateDNP.Bind( wx.EVT_CHECKBOX, self.onIndicateDNPCheckBox )
         self.autoScaleCheckBox.Bind( wx.EVT_CHECKBOX, self.onAutoScale )
         self.boundingBoxCheckBox.Bind( wx.EVT_CHECKBOX, self.onBoundingBoxCheckBox )
         self.saveConfigBtn.Bind( wx.EVT_BUTTON, self.onClickSaveConfig )
@@ -323,16 +355,25 @@ class MainDialog ( wx.Dialog ):
     def onDrillMarkChanged( self, event ):
         event.Skip()
 
+    def onColourPickerColourChanged( self, event ):
+        event.Skip()
+
     def onOpacitySliderChange( self, event ):
         event.Skip()
 
     def onMirrorLayerCheckBox( self, event ):
         event.Skip()
 
+    def onNegativeLayerCheckBox( self, event ):
+        event.Skip()
+
     def onPlotRefDesignatorsCheckBox( self, event ):
         event.Skip()
 
     def onPlotFootprintValuesCheckBox( self, event ):
+        event.Skip()
+
+    def onIndicateDNPCheckBox( self, event ):
         event.Skip()
 
     def onAutoScale( self, event ):
