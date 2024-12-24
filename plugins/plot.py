@@ -59,9 +59,10 @@ def exportLayersFromKiCad(dialog, board, directory):
                 plotOptions.SetHideDNPFPsOnFabLayers(False)
                 plotOptions.SetCrossoutDNPFPsOnFabLayers(False)
         except:
-            dlg=wx.MessageDialog(None, "Please uncheck 'Indicate DNP on Fab layer'. This feature is only supported by KiCad version 9 and up.", "Not supported", wx.OK|wx.ICON_INFORMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
+            pass
+            #dlg=wx.MessageDialog(None, "'Indicate DNP on Fab layer' is only supported by KiCad version 9 and up.", "Not supported", wx.OK|wx.ICON_INFORMATION)
+            #dlg.ShowModal()
+            #dlg.Destroy()
 
     # Plot Layers
     plotOptions.SetPlotFrameRef(False)

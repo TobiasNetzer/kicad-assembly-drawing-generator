@@ -1,11 +1,11 @@
-# Kicad Assembly Drawing Generator Plugin
+# Kicad Assembly Drawing Generator
 ![icon](https://gitlab.com/TobiasNetzer/kicad-assembly-drawing-generator/-/raw/main/resources/icon.png?ref_type=heads)
 
-A tool that makes exporting good looking assembly drawings simple. Select the layers you want as part of the assembly drawing and the plugin will take care of exporting, merging as well as scaling and generates a pdf document.
+A tool that makes it easy to export good-looking assembly drawings. Simply select the layers you want as part of the assembly drawing and this addon will take care of exporting, coloring, merging as well as scaling and will generate a pdf document.
 
 Examples:
 - NanoLogger: [Top View](https://gitlab.com/TobiasNetzer/kicad-assembly-drawing-generator/-/raw/main/doc/nanoLogger%20-%20Assembly%20Drawing%20Top.pdf?ref_type=heads)
-- NanoLogger: [Top View Color](https://gitlab.com/TobiasNetzer/kicad-assembly-drawing-generator/-/raw/main/doc/nanoLogger%20-%20Assembly%20Drawing%20Top%20Color.pdf?ref_type=heads)
+- NanoLogger (with additional colored layers): [Top View](https://gitlab.com/TobiasNetzer/kicad-assembly-drawing-generator/-/raw/main/doc/nanoLogger%20-%20Assembly%20Drawing%20Top%20Color.pdf?ref_type=heads)
 - PrecisionCurrentSource: [Combined View](https://gitlab.com/TobiasNetzer/kicad-assembly-drawing-generator/-/raw/main/doc/PrecisionCurrentSource%20-%20Assembly%20Drawing%20Top%20+%20Bot.pdf)
 - [Tigard](https://github.com/tigard-tools/tigard): [Top + Bot View](https://gitlab.com/TobiasNetzer/kicad-assembly-drawing-generator/-/raw/main/doc/tigard%20-%20Assembly%20Drawing.pdf)
 
