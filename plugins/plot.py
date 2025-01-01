@@ -50,16 +50,16 @@ def exportLayersFromKiCad(dialog, board, directory):
     #plotOptions.SetBlackAndWhite(True)
     plotController.SetColorMode(False)
 
-    if dialog.indicateDNP.IsChecked():
-        try:
-            if dialog.indicateDNP.IsChecked():
-                plotOptions.SetHideDNPFPsOnFabLayers(dialog.DNPHide.GetValue())
-                plotOptions.SetCrossoutDNPFPsOnFabLayers(dialog.DNPCrossOut.GetValue())
-            else:
-                plotOptions.SetHideDNPFPsOnFabLayers(False)
-                plotOptions.SetCrossoutDNPFPsOnFabLayers(False)
-        except:
-            pass
+    try:
+        if dialog.indicateDNP.IsChecked():
+            plotOptions.SetHideDNPFPsOnFabLayers(dialog.DNPHide.GetValue())
+            plotOptions.SetCrossoutDNPFPsOnFabLayers(dialog.DNPCrossOut.GetValue())
+        else:
+            plotOptions.SetHideDNPFPsOnFabLayers(False)
+            plotOptions.SetCrossoutDNPFPsOnFabLayers(False)
+    except:
+        pass
+        #if dialog.indicateDNP.IsChecked():
             #dlg=wx.MessageDialog(None, "'Indicate DNP on Fab layer' is only supported by KiCad version 9 and up.", "Not supported", wx.OK|wx.ICON_INFORMATION)
             #dlg.ShowModal()
             #dlg.Destroy()

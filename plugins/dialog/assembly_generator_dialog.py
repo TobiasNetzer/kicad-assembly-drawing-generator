@@ -61,7 +61,7 @@ class Dialog(assembly_generator_base_dialog.MainDialog):
                         "Opacity": 100,
                         "Mirrored": False,
                         "Negative": False,
-                        "DrillMarks": 2,
+                        "DrillMarks": 0,
                         "PlotReferenceDesignators": True,
                         "PlotFootprintValues": True,
                         "Color": 0
@@ -79,7 +79,7 @@ class Dialog(assembly_generator_base_dialog.MainDialog):
                         "Opacity": 100,
                         "Mirrored": True,
                         "Negative": False,
-                        "DrillMarks": 2,
+                        "DrillMarks": 0,
                         "PlotReferenceDesignators": True,
                         "PlotFootprintValues": True,
                         "Color": 0
@@ -111,7 +111,7 @@ class Dialog(assembly_generator_base_dialog.MainDialog):
                     "Opacity": 100,
                     "Mirrored": False,
                     "Negative": False,
-                    "DrillMarks": 2,
+                    "DrillMarks": 0,
                     "PlotReferenceDesignators": True,
                     "PlotFootprintValues": True,
                     "Color": 0
@@ -123,7 +123,7 @@ class Dialog(assembly_generator_base_dialog.MainDialog):
                     "Opacity": 100,
                     "Mirrored": True,
                     "Negative": False,
-                    "DrillMarks": 2,
+                    "DrillMarks": 0,
                     "PlotReferenceDesignators": True,
                     "PlotFootprintValues": True,
                     "Color": 0
