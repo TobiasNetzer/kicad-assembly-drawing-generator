@@ -24,14 +24,14 @@ def exportLayersFromKiCad(dialog, board, directory):
     plotOptions.SetPlotFrameRef(False)
     try:
         plotOptions.SetPlotViaOnMaskLayer(False)
+        plotOptions.SetPlotInvisibleText(False)
     except AttributeError:
-        pass # Deprecated in KiCad V9
+        pass # Deprecated in KiCad V9/V9.0.1
     plotOptions.SetAutoScale(False)
     plotOptions.SetMirror(False)
     plotOptions.SetUseGerberAttributes(False)
     plotOptions.SetScale(1)
     plotOptions.SetUseAuxOrigin(False)
-    plotOptions.SetPlotInvisibleText(False)
     plotOptions.SetSubtractMaskFromSilk(False)
     plotOptions.SetOutputDirectory(directory)
 
