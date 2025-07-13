@@ -39,12 +39,11 @@ def exportLayersFromKiCad(dialog, board, directory):
     plotOptions.SetDrillMarksType(pcbnew.DRILL_MARKS_NO_DRILL_SHAPE)
     plotOptions.SetPlotFrameRef(True)
 
-
     # In version 9.0.3, plotting drill marks was changed: the PlotLayer() function no longer calls PlotDrillMarks().
     # This is likely an oversight in the current version. As a workaround, we can use the PlotLayers() function, which produces the desired output.
     # However, since we still want to keep layer-specific settings, we can't pass a single LSET with all layers and plot them all at once.
     # Instead, we have to iterate through the layers one by one, as before.
-    if tuple(map(int, pcbnew.GetBuildVersion().split("."))) >= (9, 0, 3):
+    if tuple(map(int, pcbnew.GetBaseVersion().split("."))) >= (9, 0, 3):
         layersToPlot = pcbnew.LSET()
         layersToPlot.addLayer(pcbnew.User_9)
         layerSEQ = layersToPlot.SeqStackupForPlotting()
@@ -98,7 +97,7 @@ def exportLayersFromKiCad(dialog, board, directory):
         # This is likely an oversight in the current version. As a workaround, we can use the PlotLayers() function, which produces the desired output.
         # However, since we still want to keep layer-specific settings, we can't pass a single LSET with all layers and plot them all at once.
         # Instead, we have to iterate through the layers one by one, as before.
-        if tuple(map(int, pcbnew.GetBuildVersion().split("."))) >= (9, 0, 3):
+        if tuple(map(int, pcbnew.GetBaseVersion().split("."))) >= (9, 0, 3):
             layersToPlot = pcbnew.LSET()
             layersToPlot.addLayer(dialog.settingsLayersTop[layer]["ID"])
             layerSEQ = layersToPlot.SeqStackupForPlotting()
@@ -129,7 +128,7 @@ def exportLayersFromKiCad(dialog, board, directory):
         # This is likely an oversight in the current version. As a workaround, we can use the PlotLayers() function, which produces the desired output.
         # However, since we still want to keep layer-specific settings, we can't pass a single LSET with all layers and plot them all at once.
         # Instead, we have to iterate through the layers one by one, as before.
-        if tuple(map(int, pcbnew.GetBuildVersion().split("."))) >= (9, 0, 3):
+        if tuple(map(int, pcbnew.GetBaseVersion().split("."))) >= (9, 0, 3):
             layersToPlot = pcbnew.LSET()
             layersToPlot.addLayer(dialog.settingsLayersBot[layer]["ID"])
             layerSEQ = layersToPlot.SeqStackupForPlotting()
