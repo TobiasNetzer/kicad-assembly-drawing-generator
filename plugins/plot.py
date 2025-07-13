@@ -38,9 +38,23 @@ def exportLayersFromKiCad(dialog, board, directory):
     # Plot the Title Block and frame, will cause problems if User_9 layer is used...
     plotOptions.SetDrillMarksType(pcbnew.DRILL_MARKS_NO_DRILL_SHAPE)
     plotOptions.SetPlotFrameRef(True)
-    plotController.SetLayer(pcbnew.User_9)
-    plotController.OpenPlotfile("Title_Block", pcbnew.PLOT_FORMAT_SVG,"")
-    plotController.PlotLayer()
+
+
+    # In version 9.0.3, plotting drill marks was changed: the PlotLayer() function no longer calls PlotDrillMarks().
+    # This is likely an oversight in the current version. As a workaround, we can use the PlotLayers() function, which produces the desired output.
+    # However, since we still want to keep layer-specific settings, we can't pass a single LSET with all layers and plot them all at once.
+    # Instead, we have to iterate through the layers one by one, as before.
+    if tuple(map(int, pcbnew.GetBuildVersion().split("."))) >= (9, 0, 3):
+        layersToPlot = pcbnew.LSET()
+        layersToPlot.addLayer(pcbnew.User_9)
+        layerSEQ = layersToPlot.SeqStackupForPlotting()
+        plotController.OpenPlotfile("Title_Block", pcbnew.PLOT_FORMAT_SVG,"")
+        plotController.PlotLayers(layerSEQ)
+    else:
+        plotController.SetLayer(pcbnew.User_9)
+        plotController.OpenPlotfile("Title_Block", pcbnew.PLOT_FORMAT_SVG,"")
+        plotController.PlotLayer()
+
     plotController.ClosePlot()
 
     # Coloring is done after exporting, since we can't directly edit the color settings here.
@@ -80,9 +94,21 @@ def exportLayersFromKiCad(dialog, board, directory):
         plotOptions.SetPlotReference(dialog.settingsLayersTop[layer]["PlotReferenceDesignators"])
         plotOptions.SetPlotValue(dialog.settingsLayersTop[layer]["PlotFootprintValues"])
 
-        plotController.SetLayer(dialog.settingsLayersTop[layer]["ID"])
-        plotController.OpenPlotfile(layer, pcbnew.PLOT_FORMAT_SVG,"")
-        plotController.PlotLayer()
+        # In version 9.0.3, plotting drill marks was changed: the PlotLayer() function no longer calls PlotDrillMarks().
+        # This is likely an oversight in the current version. As a workaround, we can use the PlotLayers() function, which produces the desired output.
+        # However, since we still want to keep layer-specific settings, we can't pass a single LSET with all layers and plot them all at once.
+        # Instead, we have to iterate through the layers one by one, as before.
+        if tuple(map(int, pcbnew.GetBuildVersion().split("."))) >= (9, 0, 3):
+            layersToPlot = pcbnew.LSET()
+            layersToPlot.addLayer(dialog.settingsLayersTop[layer]["ID"])
+            layerSEQ = layersToPlot.SeqStackupForPlotting()
+            plotController.OpenPlotfile(layer, pcbnew.PLOT_FORMAT_SVG,"")
+            plotController.PlotLayers(layerSEQ)
+        else:
+            plotController.SetLayer(dialog.settingsLayersTop[layer]["ID"])
+            plotController.OpenPlotfile(layer, pcbnew.PLOT_FORMAT_SVG,"")
+            plotController.PlotLayer()
+
         plotController.ClosePlot()
 
     plotOptions.SetOutputDirectory(botDir)
@@ -99,9 +125,21 @@ def exportLayersFromKiCad(dialog, board, directory):
         plotOptions.SetPlotReference(dialog.settingsLayersBot[layer]["PlotReferenceDesignators"])
         plotOptions.SetPlotValue(dialog.settingsLayersBot[layer]["PlotFootprintValues"])
         
-        plotController.SetLayer(dialog.settingsLayersBot[layer]["ID"])
-        plotController.OpenPlotfile(layer, pcbnew.PLOT_FORMAT_SVG,"")
-        plotController.PlotLayer()
+        # In version 9.0.3, plotting drill marks was changed: the PlotLayer() function no longer calls PlotDrillMarks().
+        # This is likely an oversight in the current version. As a workaround, we can use the PlotLayers() function, which produces the desired output.
+        # However, since we still want to keep layer-specific settings, we can't pass a single LSET with all layers and plot them all at once.
+        # Instead, we have to iterate through the layers one by one, as before.
+        if tuple(map(int, pcbnew.GetBuildVersion().split("."))) >= (9, 0, 3):
+            layersToPlot = pcbnew.LSET()
+            layersToPlot.addLayer(dialog.settingsLayersBot[layer]["ID"])
+            layerSEQ = layersToPlot.SeqStackupForPlotting()
+            plotController.OpenPlotfile(layer, pcbnew.PLOT_FORMAT_SVG,"")
+            plotController.PlotLayers(layerSEQ)
+        else:
+            plotController.SetLayer(dialog.settingsLayersBot[layer]["ID"])
+            plotController.OpenPlotfile(layer, pcbnew.PLOT_FORMAT_SVG,"")
+            plotController.PlotLayer()
+
         plotController.ClosePlot()
 
 def scaleTitleBlock(titleBlockSVG):
@@ -151,17 +189,14 @@ def getBoundingBox(dialog, board):
         boundingBox = board.ComputeBoundingBox(True)
     else:
         # only get bb for selected layers, otherwise all shown layers will be included and may cause issues with scaling
-        originalVisibleLayerSet = board.GetVisibleLayers()
-        originalVisibleElements = board.GetVisibleElements()
+        originalVisibleLayerSet = pcbnew.LSET()
+        originalVisibleLayerSet.addLayerSet(board.GetVisibleLayers())
         visibleLayerSet = pcbnew.LSET()
-        visibleElements = pcbnew.GAL_SET()
         for layer in dialog.checkedLayersTop + dialog.checkedLayersBot:
             visibleLayerSet.AddLayer(board.GetLayerID(layer))
         board.SetVisibleLayers(visibleLayerSet)
-        board.SetVisibleElements(visibleElements)
         boundingBox = board.ComputeBoundingBox(False)
         board.SetVisibleLayers(originalVisibleLayerSet)
-        board.SetVisibleElements(originalVisibleElements)
     
     return boundingBox
 
