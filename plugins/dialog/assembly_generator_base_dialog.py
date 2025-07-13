@@ -20,9 +20,9 @@ _ = gettext.gettext
 class MainDialog ( wx.Dialog ):
 
     def __init__( self, parent ):
-        wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"Assembly drawing generator"), pos = wx.DefaultPosition, size = wx.Size( 550,750 ), style = wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.SYSTEM_MENU )
+        wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"Assembly drawing generator"), pos = wx.DefaultPosition, size = wx.Size( 550,800 ), style = wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.SYSTEM_MENU )
 
-        self.SetSizeHints( self.FromDIP(wx.Size( 550,750 )), wx.DefaultSize )
+        self.SetSizeHints( self.FromDIP(wx.Size( 550,800 )), wx.DefaultSize )
 
         bSizer1 = wx.BoxSizer( wx.VERTICAL )
 
@@ -267,12 +267,12 @@ class MainDialog ( wx.Dialog ):
 
         self.exitBtn = wx.Button( Output.GetStaticBox(), wx.ID_ANY, _(u"Exit"), wx.DefaultPosition, wx.DefaultSize, 0 )
 
-        self.exitBtn.SetBitmap( wx.ArtProvider.GetBitmap( wx.ART_QUIT, wx.ART_MESSAGE_BOX ) )
+        self.exitBtn.SetBitmap( wx.ArtProvider.GetBitmap( wx.ART_QUIT, wx.ART_TOOLBAR ) )
         bSizer12.Add( self.exitBtn, 1, wx.ALL, 5 )
 
         self.generateBtn = wx.Button( Output.GetStaticBox(), wx.ID_ANY, _(u"Generate"), wx.DefaultPosition, wx.DefaultSize, 0 )
 
-        self.generateBtn.SetBitmap( wx.ArtProvider.GetBitmap( wx.ART_FILE_SAVE, wx.ART_MESSAGE_BOX ) )
+        self.generateBtn.SetBitmap( wx.ArtProvider.GetBitmap( wx.ART_FILE_SAVE, wx.ART_TOOLBAR ) )
         bSizer12.Add( self.generateBtn, 1, wx.ALL, 5 )
 
 

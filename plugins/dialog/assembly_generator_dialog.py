@@ -335,6 +335,7 @@ class Dialog(assembly_generator_base_dialog.MainDialog):
 
     def onClickGenerate(self, event):
         self.statusText.SetLabel("Generating... This may take a while depending on the complexity of your design.")
+        self.statusText.Update()
         self.generateFunc(self)
         self.statusText.SetLabel("Done!")
         
