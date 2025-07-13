@@ -13,6 +13,7 @@ class assembly_generator(pcbnew.ActionPlugin):
         self.show_toolbar_button = True
         icon_dir = os.path.dirname(__file__)
         self.icon_file_name = os.path.join(icon_dir, 'icon.png')
+        self.dark_icon_file_name = os.path.join(icon_dir, 'icon.png')
         self.description = "Generate Assembly Drawings"
 
     def Run(self) -> None:
