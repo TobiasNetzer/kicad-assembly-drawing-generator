@@ -1,13 +1,13 @@
 # Kicad Assembly Drawing Generator
-![icon](https://gitlab.com/TobiasNetzer/kicad-assembly-drawing-generator/-/raw/main/resources/icon.png?ref_type=heads)
+![icon](resources/icon.png)
 
-A tool that makes it easy to export good-looking assembly drawings. Simply select the layers you want as part of the assembly drawing and this addon will take care of exporting, coloring, merging as well as scaling and will generate a pdf document.
+A tool that makes it easy to export good-looking assembly drawings from a kicad_pcb file. This addon takes care of exporting selected layers from kicad as SVG-files, coloring, merging and scaling, then generates an easy to share pdf document.
 
 Examples:
-- NanoLogger: [Top View](https://gitlab.com/TobiasNetzer/kicad-assembly-drawing-generator/-/raw/main/doc/nanoLogger%20-%20Assembly%20Drawing%20Top.pdf?ref_type=heads)
-- NanoLogger (with additional colored layers): [Top View](https://gitlab.com/TobiasNetzer/kicad-assembly-drawing-generator/-/raw/main/doc/nanoLogger%20-%20Assembly%20Drawing%20Top%20Color.pdf?ref_type=heads)
-- PrecisionCurrentSource: [Combined View](https://gitlab.com/TobiasNetzer/kicad-assembly-drawing-generator/-/raw/main/doc/PrecisionCurrentSource%20-%20Assembly%20Drawing%20Top%20+%20Bot.pdf)
-- [Tigard](https://github.com/tigard-tools/tigard): [Top + Bot View](https://gitlab.com/TobiasNetzer/kicad-assembly-drawing-generator/-/raw/main/doc/tigard%20-%20Assembly%20Drawing.pdf)
+- NanoLogger: [Top View](doc/nanoLogger%20-%20Assembly%20Drawing%20Top.pdf)
+- NanoLogger (with additional colored layers): [Top View](doc/nanoLogger%20-%20Assembly%20Drawing%20Top%20Color.pdf)
+- PrecisionCurrentSource: [Combined View](doc/PrecisionCurrentSource%20-%20Assembly%20Drawing%20Top%20+%20Bot.pdf)
+- [Tigard](https://github.com/tigard-tools/tigard): [Top + Bot View](doc/tigard%20-%20Assembly%20Drawing.pdf)
 
 ## Usage
 
@@ -15,14 +15,14 @@ Configure `Top` and `Bottom` views of your board:
 - Simply select and sort the layers you want shown in your assembly drawing
 - Adjust the layer properties for each layer to achieve the look you want
 
-Configure `Output`:
+Configure the `Output`:
 - Select a scale factor or use the auto scaling option
 - Select board views to export
 - An `Assembly Drawing` folder containing the exported files will be created in the output directory, which by default points to the project folder
 
 Make sure to save your configuration once you're happy with it!
 
-![dialog](https://gitlab.com/TobiasNetzer/kicad-assembly-drawing-generator/-/raw/main/doc/dialog.png?ref_type=heads)
+![dialog](doc/dialog.png)
 
 ## Installation
 
@@ -36,8 +36,8 @@ Kicad assembly drawing generator is currently not part of the official Kicad add
 - Select the downloaded `.zip` archive containing the plugin
 - The plugin should now show up in the installed tab
 
-![installation](https://gitlab.com/TobiasNetzer/kicad-assembly-drawing-generator/-/raw/main/doc/installation.png?ref_type=heads)
-![installed](https://gitlab.com/TobiasNetzer/kicad-assembly-drawing-generator/-/raw/main/doc/installed.png?ref_type=heads)
+![installation](doc/installation.png)
+![installed](doc/installed.png)
 
 ## Disclaimer
 

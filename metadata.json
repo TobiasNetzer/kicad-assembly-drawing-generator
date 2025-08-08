@@ -2,24 +2,24 @@
     "$schema": "https://go.kicad.org/pcm/schemas/v1",
     "name": "Assembly Drawing Generator",
     "description": "Generate assembly drawings",
-    "description_full": "A tool that makes exporting good looking assembly drawings simple. Select the layers you want as part of the assembly drawing and the plugin will take care of exporting, merging as well as scaling and generate a pdf document.",
-    "identifier": "com.gitlab.TobiasNetzer.Kicad-assembly-drawing-generator",
+    "description_full": "A tool that makes it easy to export good-looking assembly drawings from a kicad_pcb file. This addon takes care of exporting selected layers from kicad as SVG-files, coloring, merging and scaling, then generates an easy to share pdf document.",
+    "identifier": "com.github.TobiasNetzer.Kicad-assembly-drawing-generator",
     "type": "plugin",
     "author": {
         "name": "Tobias Netzer",
         "contact": {
-            "gitlab": "https://gitlab.com/TobiasNetzer"
+            "github": "https://github.com/TobiasNetzer"
         }
     },    
     "maintainer": {
         "name": "Tobias Netzer",
         "contact": {
-            "gitlab": "https://gitlab.com/TobiasNetzer"
+            "github": "https://github.com/TobiasNetzer"
         }
     },
     "license": "MIT",
     "resources": {
-        "homepage": "https://gitlab.com/TobiasNetzer/kicad-assembly-drawing-generator"
+        "homepage": "https://github.com/TobiasNetzer/kicad-assembly-drawing-generator"
     },
     "versions": [
         {
