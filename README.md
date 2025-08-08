@@ -1,7 +1,7 @@
 # Kicad Assembly Drawing Generator
 ![icon](resources/icon.png)
 
-A tool that makes it easy to export good-looking assembly drawings from a kicad_pcb file. This addon takes care of exporting selected layers from kicad as SVG-files, coloring, merging and scaling, then generates an easy to share pdf document.
+A tool that makes it easy to export good-looking assembly drawings from a `.kicad_pcb` file. This addon takes care of exporting selected layers from kicad as SVG-files, coloring, merging and scaling, then generates an easy to share pdf document.
 
 Examples:
 - NanoLogger: [Top View](doc/nanoLogger%20-%20Assembly%20Drawing%20Top.pdf)
