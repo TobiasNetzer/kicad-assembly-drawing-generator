@@ -26,10 +26,6 @@ Make sure to save your configuration once you're happy with it!
 
 ## Installation
 
-**Note:** [CairoSVG](https://github.com/Kozea/CairoSVG) needs to be installed in order for the plugin to convert svg files into pdf's.
-- To install it simply open `KiCad Command Prompt` and run `python -m pip install cairosvg`
-
-
 Kicad assembly drawing generator is currently not part of the official Kicad addons repository and therefore has to be manually installed.
 - Download the current release
 - Open the Kicad PCM and select `Install from File...`
@@ -38,6 +34,9 @@ Kicad assembly drawing generator is currently not part of the official Kicad add
 
 ![installation](doc/installation.png)
 ![installed](doc/installed.png)
+
+**Note:** [CairoSVG](https://github.com/Kozea/CairoSVG) needs to be installed in order for the plugin to convert svg files into pdf's.
+- To install it simply open `KiCad Command Prompt` and run `python -m pip install cairosvg`
 
 ## Disclaimer
 
