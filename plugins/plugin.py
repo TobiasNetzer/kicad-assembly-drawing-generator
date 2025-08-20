@@ -18,8 +18,12 @@ class assembly_generator(pcbnew.ActionPlugin):
 
     def Run(self) -> None:
         pcb_frame = next(
-            x for x in wx.GetTopLevelWindows() if x.GetName() == "PcbFrame"
+            (x for x in list(wx.GetTopLevelWindows()) if x.GetName() == "PcbFrame"),
+            None
         )
+
+        if pcb_frame is None:
+            raise RuntimeError("PcbFrame window not found.")
 
         dlg = Dialog(pcb_frame, plot.generateAssembly)
         if dlg.ShowModal() == wx.ID_CANCEL:
