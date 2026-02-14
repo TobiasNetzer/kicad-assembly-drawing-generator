@@ -43,7 +43,7 @@ def exportLayersFromKiCad(dialog, board, directory):
     # This is likely an oversight in the current version. As a workaround, we can use the PlotLayers() function, which produces the desired output.
     # However, since we still want to keep layer-specific settings, we can't pass a single LSET with all layers and plot them all at once.
     # Instead, we have to iterate through the layers one by one, as before.
-    if tuple(map(int, pcbnew.GetBaseVersion().split("."))) >= (9, 0, 3):
+    if tuple(map(int, pcbnew.GetMajorMinorPatchVersion().split("."))) >= (9, 0, 3):
         layersToPlot = pcbnew.LSET()
         layersToPlot.addLayer(pcbnew.User_9)
         layerSEQ = layersToPlot.SeqStackupForPlotting()
@@ -97,7 +97,7 @@ def exportLayersFromKiCad(dialog, board, directory):
         # This is likely an oversight in the current version. As a workaround, we can use the PlotLayers() function, which produces the desired output.
         # However, since we still want to keep layer-specific settings, we can't pass a single LSET with all layers and plot them all at once.
         # Instead, we have to iterate through the layers one by one, as before.
-        if tuple(map(int, pcbnew.GetBaseVersion().split("."))) >= (9, 0, 3):
+        if tuple(map(int, pcbnew.GetMajorMinorPatchVersion().split("."))) >= (9, 0, 3):
             layersToPlot = pcbnew.LSET()
             layersToPlot.addLayer(dialog.settingsLayersTop[layer]["ID"])
             layerSEQ = layersToPlot.SeqStackupForPlotting()
@@ -128,7 +128,7 @@ def exportLayersFromKiCad(dialog, board, directory):
         # This is likely an oversight in the current version. As a workaround, we can use the PlotLayers() function, which produces the desired output.
         # However, since we still want to keep layer-specific settings, we can't pass a single LSET with all layers and plot them all at once.
         # Instead, we have to iterate through the layers one by one, as before.
-        if tuple(map(int, pcbnew.GetBaseVersion().split("."))) >= (9, 0, 3):
+        if tuple(map(int, pcbnew.GetMajorMinorPatchVersion().split("."))) >= (9, 0, 3):
             layersToPlot = pcbnew.LSET()
             layersToPlot.addLayer(dialog.settingsLayersBot[layer]["ID"])
             layerSEQ = layersToPlot.SeqStackupForPlotting()
@@ -409,8 +409,13 @@ def mergeSVGs(svgFiles, outputFileName):
 def generateAssembly(dialog):
     try:
         import cairosvg
-    except ImportError as e:
+    except ImportError:
         dlg=wx.MessageDialog(None, "CairoSVG is not installed. Run 'python -m pip install cairosvg' from kicad command prompt and restart kicad.", "Error", wx.OK|wx.ICON_INFORMATION)
+        dlg.ShowModal()
+        dlg.Destroy()
+        return
+    except Exception as e:
+        dlg=wx.MessageDialog(None, "An error occurred while importing CairoSVG: " + str(e), "Error", wx.OK|wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         return
